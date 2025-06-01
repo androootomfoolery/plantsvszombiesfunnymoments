@@ -17,8 +17,8 @@ const { fetchAndSaveSnapshot } = require('./spotify');
 
 // List all playlist IDs you want to track here
 const trackedPlaylists = [
-  '7bGfzjckDQDDvAIMVe95jF',
-  // Add more public playlist IDs if desired
+  '7bGfzjckDQDDvAIMVe95jF',     // first playlist
+  '7p9MuqPeyJmjDqU0A7yML1',     // second playlist
 ];
 
 (async () => {
@@ -67,7 +67,7 @@ const trackedPlaylists = [
           continue;
         }
 
-        // descMatch[1] or imgMatch[1] is the raw timestamp string (e.g. "2025-06-01T10-31-45-571Z")
+        // descMatch[1] or imgMatch[1] is the raw timestamp string
         const raw = descMatch ? descMatch[1] : imgMatch[1];
 
         // Convert "YYYY-MM-DDTHH-mm-ss-SSSZ" → "YYYY-MM-DDTHH:mm:ss.SSSZ"
@@ -77,7 +77,6 @@ const trackedPlaylists = [
         );
         const dateObj = new Date(fixedTimestamp);
         if (isNaN(dateObj.getTime())) {
-          // skip any files that don’t parse to a valid date
           continue;
         }
 
