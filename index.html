@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Playlist Change Calendar</title>
 
-  <!-- Because this repo is served at /forE/, use this base href -->
+  <!-- Base href so that all relative URLs (history.json, data/…) resolve under /forE/ -->
   <base href="/forE/" />
 
   <style>
@@ -76,10 +76,10 @@
         const calendarDiv = document.getElementById('calendar');
         calendarDiv.innerHTML = ''; // clear “Loading dates…”
 
-        // Flatten all snapshots from all playlists, capturing the playlist 'name' field
+        // Flatten all snapshots from all playlists, capturing playlistName
         const allSnapshots = data.flatMap(pl =>
           pl.snapshots.map(snap => ({
-            playlistName: pl.name, // use the actual Spotify playlist name
+            playlistName: pl.name, // use the real name from history.json
             ...snap
           }))
         );
@@ -89,17 +89,17 @@
           return;
         }
 
-        // Group by date (YYYY-MM-DD)
+        // Group snapshots by date (YYYY-MM-DD)
         const grouped = allSnapshots.reduce((acc, snap) => {
           acc[snap.date] = acc[snap.date] || [];
           acc[snap.date].push(snap);
           return acc;
         }, {});
 
-        // Sort dates descending (newest first)
+        // Sort dates descending
         const dates = Object.keys(grouped).sort((a, b) => (a < b ? 1 : -1));
 
-        // Create a button for each date
+        // Render one button for each date
         dates.forEach(date => {
           const btn = document.createElement('button');
           btn.textContent = date;
@@ -115,11 +115,13 @@
     function showSnapshots(date, snaps) {
       const detailsDiv = document.getElementById('details');
       detailsDiv.innerHTML = `<h2>Changes on ${date}</h2>`;
-      snaps.forEach((snap) => {
+      snaps.forEach(snap => {
         detailsDiv.innerHTML += `
           <div class="snapshot">
-            <div class="timestamp">${new Date(snap.timestamp).toLocaleTimeString()}</div>
-            <strong>${snap.playlistName}</strong>  <!-- show real name here -->
+            <div class="timestamp">
+              ${new Date(snap.timestamp).toLocaleTimeString()}
+            </div>
+            <strong>${snap.playlistName}</strong>      <!-- Real Spotify name here -->
             <p>${snap.description || '<em>(no description)</em>'}</p>
             <img src="${snap.imageUrl}" alt="Playlist image on ${date}" />
           </div>
