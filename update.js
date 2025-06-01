@@ -7,14 +7,17 @@ const { fetchAndSaveSnapshot } = require('./spotify');
 
 (async () => {
   try {
-    // 1) Define your list of playlist IDs to track:
     const trackedPlaylists = ['7bGfzjckDQDDvAIMVe95jF'];
-    // (You can add more IDs here or load from a file.)
-
     let wroteSomething = false;
 
+    // We'll keep a map from playlistId -> realName
+    const nameMap = {};
+
     for (const playlistId of trackedPlaylists) {
-      const changed = await fetchAndSaveSnapshot(playlistId);
+      const { changed, name } = await fetchAndSaveSnapshot(playlistId);
+      // Save the real name in our map
+      nameMap[playlistId] = name;
+
       if (changed) {
         console.log(`Snapshot updated for ${playlistId}`);
         wroteSomething = true;
@@ -23,9 +26,7 @@ const { fetchAndSaveSnapshot } = require('./spotify');
       }
     }
 
-    // 2) Rebuild history.json (front‐end data)
-    //    We’ll walk every data/<playlistId> folder and gather snapshots
-
+    // 2) Rebuild history.json
     const dataDir = path.join(__dirname, 'data');
     const playlistDirs = await fs.readdir(dataDir).catch(() => []);
     const allPlaylists = [];
@@ -55,7 +56,11 @@ const { fetchAndSaveSnapshot } = require('./spotify');
         const dateOnly = iso.split('T')[0];
 
         if (!snapshots[iso]) {
-          snapshots[iso] = { timestamp: iso, date: dateOnly, playlistId };
+          snapshots[iso] = {
+            timestamp: iso,
+            date: dateOnly,
+            playlistId,
+          };
         }
 
         if (file.endsWith('-description.txt')) {
@@ -64,7 +69,8 @@ const { fetchAndSaveSnapshot } = require('./spotify');
             'utf8'
           );
         } else if (file.endsWith('-image.jpg')) {
-          snapshots[iso].imageUrl = `/data/${playlistId}/${file}`;
+          // Make sure this is a relative path (no leading slash)
+          snapshots[iso].imageUrl = `data/${playlistId}/${file}`;
         }
       }
 
@@ -72,18 +78,26 @@ const { fetchAndSaveSnapshot } = require('./spotify');
         new Date(b.timestamp) - new Date(a.timestamp)
       );
 
-      allPlaylists.push({ playlistId, name: `Playlist ${playlistId}`, snapshots: sorted });
+      allPlaylists.push({
+        playlistId,
+        // use the real name we stored earlier; if for some reason it’s missing,
+        // fall back to the ID
+        name: nameMap[playlistId] || playlistId,
+        snapshots: sorted,
+      });
     }
 
-    // Write top‐level history.json
-    await fs.writeJSON(path.join(__dirname, 'history.json'), allPlaylists, { spaces: 2 });
+    // Write history.json at the repo root
+    await fs.writeJSON(path.join(__dirname, 'history.json'), allPlaylists, {
+      spaces: 2,
+    });
     console.log('Rebuilt history.json');
 
-    // 3) If new files were written, commit & push
+    // 3) Commit & push if anything changed
     if (wroteSomething) {
       const git = simpleGit();
       await git.add(['data/**', 'history.json']);
-      await git.commit('🗂️ Auto‐update snapshots via GitHub Actions');
+      await git.commit('🗂️ Auto-update snapshots via GitHub Actions');
       await git.push('origin', 'main');
       console.log('Committed and pushed changes');
     } else {

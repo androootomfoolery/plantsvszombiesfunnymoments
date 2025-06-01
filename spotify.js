@@ -4,14 +4,11 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 
-// We assume `process.env.SPOTIFY_CLIENT_ID` and `process.env.SPOTIFY_CLIENT_SECRET`
-// are set as GitHub Secrets.  GitHub Actions will inject them.
-
 let accessToken = null;
 
 async function getAccessToken() {
   if (accessToken) return accessToken;
-  const resp = await axios.post(
+  const res = await axios.post(
     'https://accounts.spotify.com/api/token',
     'grant_type=client_credentials',
     {
@@ -25,74 +22,57 @@ async function getAccessToken() {
       },
     }
   );
-  accessToken = resp.data.access_token;
+  accessToken = res.data.access_token;
   return accessToken;
 }
 
-// This function will be called by update.js
-// It ensures a new snapshot is only saved if description or image changed.
 async function fetchAndSaveSnapshot(playlistId) {
-  if (!accessToken) {
-    await getAccessToken();
-  }
+  if (!accessToken) await getAccessToken();
 
-  const resp = await axios.get(
-    `https://api.spotify.com/v1/playlists/${playlistId}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
+  // 1) Fetch the playlist from Spotify
+  const resp = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 
-  const { description: newDescription, images, name } = resp.data;
-  const imageUrl = images[0]?.url || null;
+  // Extract the real name from the API response:
+  const realName = resp.data.name;              
+  const newDescription = resp.data.description || '';
+  const imageUrl = resp.data.images[0]?.url || null;
 
-  // Ensure data/<playlistId> exists
+  // 2) Ensure the folder data/<playlistId> exists
   const folder = path.join(__dirname, 'data', playlistId);
   await fs.ensureDir(folder);
 
-  // Check existing description files
+  // 3) Find the most recent description file (to compare)
   const existing = await fs.readdir(folder);
-  const descFiles = existing.filter((f) => f.endsWith('-description.txt')).sort();
+  const descFiles = existing.filter(f => f.endsWith('-description.txt')).sort();
+
   let lastDescription = '';
-  let lastImageFile = null;
-
   if (descFiles.length) {
-    const lastDesc = descFiles[descFiles.length - 1];
-    lastDescription = await fs.readFile(path.join(folder, lastDesc), 'utf8');
+    lastDescription = await fs.readFile(path.join(folder, descFiles.pop()), 'utf8');
   }
 
-  const imageFiles = existing.filter((f) => f.endsWith('-image.jpg')).sort();
-  if (imageFiles.length) {
-    lastImageFile = imageFiles[imageFiles.length - 1];
-  }
-
-  // If nothing changed, do nothing
+  // 4) Compare description and image
+  const imageFiles = existing.filter(f => f.endsWith('-image.jpg')).sort();
+  let lastImageFile = imageFiles.length ? imageFiles.pop() : null;
   const imageUnchanged =
-    lastImageFile &&
-    imageUrl &&
-    imageUrl === images[0]?.url; // simple URL‐compare heuristic
+    lastImageFile && imageUrl && imageUrl === resp.data.images[0].url;
 
   if (newDescription === lastDescription && imageUnchanged) {
-    // No change → skip writing
-    return false;
+    // Nothing changed → return { changed: false, name: realName }
+    return { changed: false, name: realName };
   }
 
-  // Something changed, so write a new snapshot
-  // Filename timestamp: "YYYY‐MM‐DDTHH‐mm‐ss‐SSSZ"
+  // 5) Something changed → write new snapshot files
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  // e.g. "2025-06-02T15-10-45.123Z".replace(/[:.]/g,'-')
-  // → "2025-06-02T15-10-45-123Z"
+  await fs.writeFile(path.join(folder, `${timestamp}-description.txt`), newDescription);
 
-  // 1) Write description text
-  const descFilename = `${timestamp}-description.txt`;
-  await fs.writeFile(path.join(folder, descFilename), newDescription || '');
-
-  // 2) Download & write image
   if (imageUrl) {
-    const imgResp = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-    const imgFilename = `${timestamp}-image.jpg`;
-    await fs.writeFile(path.join(folder, imgFilename), imgResp.data);
+    const imgRes = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    await fs.writeFile(path.join(folder, `${timestamp}-image.jpg`), imgRes.data);
   }
 
-  return true;
+  return { changed: true, name: realName };
 }
 
 module.exports = { fetchAndSaveSnapshot };
