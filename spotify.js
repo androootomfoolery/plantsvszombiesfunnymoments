@@ -1,21 +1,23 @@
 // spotify.js
+
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
-require('dotenv').config();
+
+// We assume `process.env.SPOTIFY_CLIENT_ID` and `process.env.SPOTIFY_CLIENT_SECRET`
+// are set as GitHub Secrets.  GitHub Actions will inject them.
 
 let accessToken = null;
 
-// 1) Helper: get a fresh access token (Client Credentials Flow)
 async function getAccessToken() {
   if (accessToken) return accessToken;
-
-  const res = await axios.post(
+  const resp = await axios.post(
     'https://accounts.spotify.com/api/token',
     'grant_type=client_credentials',
     {
       headers: {
-        'Authorization': 'Basic ' +
+        Authorization:
+          'Basic ' +
           Buffer.from(
             process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET
           ).toString('base64'),
@@ -23,95 +25,74 @@ async function getAccessToken() {
       },
     }
   );
-
-  accessToken = res.data.access_token;
+  accessToken = resp.data.access_token;
   return accessToken;
 }
 
-// 2) Main: fetchPlaylist now checks for change before saving
-async function fetchPlaylist(playlistId) {
-  // a) Ensure we have a token
-  if (!accessToken) await getAccessToken();
+// This function will be called by update.js
+// It ensures a new snapshot is only saved if description or image changed.
+async function fetchAndSaveSnapshot(playlistId) {
+  if (!accessToken) {
+    await getAccessToken();
+  }
 
-  // b) Call Spotify’s “Get Playlist” endpoint
-  const res = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
+  const resp = await axios.get(
+    `https://api.spotify.com/v1/playlists/${playlistId}`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
 
-  const { description: newDescription, images, name } = res.data;
-  const imageUrl = images[0]?.url || null; // could be null if no image
+  const { description: newDescription, images, name } = resp.data;
+  const imageUrl = images[0]?.url || null;
 
-  // c) Prepare a place to store snapshots
+  // Ensure data/<playlistId> exists
   const folder = path.join(__dirname, 'data', playlistId);
   await fs.ensureDir(folder);
 
-  // d) Look at the most‐recent saved description (if any)
-  //    Find the latest “*-description.txt” file inside that folder
-  const existingFiles = await fs.readdir(folder);
-  const descFiles = existingFiles
-    .filter(f => f.endsWith('-description.txt'))
-    .sort(); 
-  // After sorting lexically, the last filename usually has the newest timestamp,
-  // assuming your filenames are “YYYY-MM-DDTHH-mm-ss-description.txt”.
-
+  // Check existing description files
+  const existing = await fs.readdir(folder);
+  const descFiles = existing.filter((f) => f.endsWith('-description.txt')).sort();
   let lastDescription = '';
   let lastImageFile = null;
 
-  if (descFiles.length > 0) {
-    // Read the contents of the most recent description file
-    const latestDescFile = descFiles[descFiles.length - 1];
-    lastDescription = await fs.readFile(path.join(folder, latestDescFile), 'utf8');
+  if (descFiles.length) {
+    const lastDesc = descFiles[descFiles.length - 1];
+    lastDescription = await fs.readFile(path.join(folder, lastDesc), 'utf8');
   }
 
-  // e) Compare newDescription to lastDescription, and also check if image changed
-  //    We’ll also keep track of the last saved image URL in a side‐file or by inspecting filenames:
-  const imageFiles = existingFiles
-    .filter(f => f.endsWith('-image.jpg'))
-    .sort();
-  if (imageFiles.length > 0) {
-    // If a previously saved snapshot exists, just grab its filename
+  const imageFiles = existing.filter((f) => f.endsWith('-image.jpg')).sort();
+  if (imageFiles.length) {
     lastImageFile = imageFiles[imageFiles.length - 1];
   }
 
-  // If **both** description and image are unchanged, skip saving anything
+  // If nothing changed, do nothing
   const imageUnchanged =
     lastImageFile &&
     imageUrl &&
-    lastImageFile.startsWith(
-      // The timestamp portion of lastImageFile: e.g. "2025-06-01T14-00-00-image.jpg"
-      lastImageFile.split('-image.jpg')[0]
-    ) &&
-    // A quick but imperfect check: if the **URL** is identical to the last saved URL,
-    // we assume image hasn’t changed. Alternatively, you could hash the downloaded bytes.
-    imageUrl === res.data.images[0]?.url;
-
-  // _Note_: Because we can't store the URL string directly in a file, the above check for
-  // imageUnchanged is a heuristic: if the new imageUrl matches what we fetched now,
-  // and the last saved image’s filename timestamp was from a previous run, we know it’s the same.
-  // If you want a bulletproof check, you could store the last URL in a tiny “meta.json” and compare against that.
+    imageUrl === images[0]?.url; // simple URL‐compare heuristic
 
   if (newDescription === lastDescription && imageUnchanged) {
-    // No change detected → do nothing
-    return { name, description: newDescription, imageUrl };
+    // No change → skip writing
+    return false;
   }
 
-  // f) Otherwise, we need to save a new snapshot
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-'); 
+  // Something changed, so write a new snapshot
+  // Filename timestamp: "YYYY‐MM‐DDTHH‐mm‐ss‐SSSZ"
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   // e.g. "2025-06-02T15-10-45.123Z".replace(/[:.]/g,'-')
   // → "2025-06-02T15-10-45-123Z"
 
-  // (1) Save the new description text
+  // 1) Write description text
   const descFilename = `${timestamp}-description.txt`;
   await fs.writeFile(path.join(folder, descFilename), newDescription || '');
 
-  // (2) Download and save the new image (if it exists)
+  // 2) Download & write image
   if (imageUrl) {
-    const imgRes = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    const imgResp = await axios.get(imageUrl, { responseType: 'arraybuffer' });
     const imgFilename = `${timestamp}-image.jpg`;
-    await fs.writeFile(path.join(folder, imgFilename), imgRes.data);
+    await fs.writeFile(path.join(folder, imgFilename), imgResp.data);
   }
 
-  return { name, description: newDescription, imageUrl };
+  return true;
 }
 
-module.exports = { fetchPlaylist };
+module.exports = { fetchAndSaveSnapshot };
