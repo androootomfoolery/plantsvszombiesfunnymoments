@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Playlist Change Calendar</title>
+  <title>Playlist Change Calendar (Stacked Details)</title>
 
   <!--
     Since this repo is served at:
@@ -14,10 +14,13 @@
   <style>
     body {
       font-family: sans-serif;
-      margin: 2em;
-      background: #f3f3f3;
+      margin: 0;
+      background: url('flower.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #222;
     }
     h1 {
+      text-align: center;
       font-size: 2em;
       margin-bottom: 1em;
     }
@@ -71,7 +74,6 @@
       border-radius: 6px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
     .snapshot {
       border-bottom: 1px solid #ddd;
       padding: 0.75em 0;
@@ -109,6 +111,7 @@
   </div>
 
   <script>
+    // 1) Fetch history.json (relative path, not starting with "/")
     fetch('history.json')
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status} - could not load history.json`);
@@ -172,6 +175,7 @@
         });
       })
       .catch(err => {
+        document.getElementById('calendar').innerText = 'Failed to load data.';
         console.error(err);
         document.getElementById('playlists').innerText = 'Failed to load data.';
       });
