@@ -5,7 +5,7 @@
   <title>Playlist Change Calendar</title>
 
   <!--
-    Because this is served from:
+    Since this repo is served at:
       https://andrewtomfohrde.github.io/forE/
     the <base> ensures all relative URLs (history.json, data/…) resolve under /forE/
   -->
@@ -19,125 +19,178 @@
     }
     h1 {
       font-size: 2em;
-      margin-bottom: 0.5em;
+      margin-bottom: 1em;
     }
-    #calendar {
+
+    /* Container for the two playlists side by side */
+    .playlists-container {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Each playlist column */
+    .playlist-column {
+      flex: 1;
+      background: white;
+      padding: 1em;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .playlist-column h2 {
+      margin-top: 0;
+      font-size: 1.5em;
+      margin-bottom: 0.5em;
+      text-align: center;
+    }
+
+    .calendar {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 1.5em;
+      gap: 8px;
+      margin-bottom: 1em;
     }
-    #calendar button {
-      padding: 8px 14px;
+
+    .calendar button {
+      padding: 6px 10px;
       border: none;
       background: #007bff;
       color: #fff;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.9em;
+      font-size: 0.85em;
     }
-    #calendar button:hover {
+    .calendar button:hover {
       background: #0056b3;
     }
-    #details {
-      background: white;
+
+    .details {
+      background: #fdfdfd;
       padding: 1em;
       border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
+
     .snapshot {
       border-bottom: 1px solid #ddd;
-      padding: 1em 0;
+      padding: 0.75em 0;
     }
     .snapshot:last-child {
       border-bottom: none;
     }
+
     .snapshot img {
-      max-width: 300px;
+      max-width: 100%;
       margin-top: 0.5em;
       border-radius: 4px;
     }
+
     .timestamp {
       font-size: 0.85em;
       color: #555;
+      margin-bottom: 0.25em;
+    }
+
+    /* If a playlist has no snapshots at all */
+    .no-snapshots {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      margin-top: 1em;
     }
   </style>
 </head>
 <body>
-  <h1>📅 Playlist Change Calendar</h1>
-  <div id="calendar">Loading dates…</div>
-  <div id="details"></div>
+  <h1>📅 Playlist Change Calendars</h1>
+
+  <div id="playlists" class="playlists-container">
+    <!-- Two columns (one per playlist) will be injected here -->
+  </div>
 
   <script>
-    // 1) Fetch history.json (relative path, not starting with "/")
     fetch('history.json')
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status} - could not load history.json`);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status} - could not load history.json`);
         return res.json();
       })
       .then(data => {
-        const calendarDiv = document.getElementById('calendar');
-        calendarDiv.innerHTML = ''; // clear “Loading dates…”
+        const container = document.getElementById('playlists');
+        container.innerHTML = ''; // Clear any placeholder
 
-        // 2) Flatten all snapshots from all playlists, capturing playlistName
-        //
-        //    data is an array of objects like:
-        //      {
-        //        playlistId: "7bGfzjck…",
-        //        name: "▶️ My Playlist Name",
-        //        snapshots: [ { timestamp, date, playlistId, description, imageUrl }, … ]
-        //      }
-        //
-        const allSnapshots = data.flatMap(pl =>
-          pl.snapshots.map(snap => ({
-            playlistName: pl.name, // real Spotify playlist name
-            ...snap
-          }))
-        );
+        // For each playlist object in history.json, build a column
+        data.forEach(pl => {
+          // Create a column wrapper
+          const col = document.createElement('div');
+          col.className = 'playlist-column';
 
-        // 3) If no snapshots at all, show a message
-        if (allSnapshots.length === 0) {
-          calendarDiv.innerHTML = 'No snapshots yet.';
-          return;
-        }
+          // Title: the real Spotify playlist name
+          const title = document.createElement('h2');
+          title.textContent = pl.name;
+          col.appendChild(title);
 
-        // 4) Group snapshots by `snap.date` (YYYY-MM-DD)
-        const grouped = allSnapshots.reduce((acc, snap) => {
-          acc[snap.date] = acc[snap.date] || [];
-          acc[snap.date].push(snap);
-          return acc;
-        }, {});
+          // Calendar (date buttons)
+          const calDiv = document.createElement('div');
+          calDiv.className = 'calendar';
+          calDiv.id = `calendar-${pl.playlistId}`; // unique ID so we can target it
+          col.appendChild(calDiv);
 
-        // 5) Sort dates descending (newest first)
-        const dates = Object.keys(grouped).sort((a, b) => (a < b ? 1 : -1));
+          // Details area
+          const detailsDiv = document.createElement('div');
+          detailsDiv.className = 'details';
+          detailsDiv.id = `details-${pl.playlistId}`; // unique ID for snapshots
+          col.appendChild(detailsDiv);
 
-        // 6) Render one button for each distinct date
-        dates.forEach(date => {
-          const btn = document.createElement('button');
-          btn.textContent = date;
-          btn.onclick = () => showSnapshots(date, grouped[date]);
-          calendarDiv.appendChild(btn);
+          // If no snapshots, show “No snapshots yet.”
+          if (!pl.snapshots || pl.snapshots.length === 0) {
+            const noSnap = document.createElement('div');
+            noSnap.className = 'no-snapshots';
+            noSnap.textContent = 'No snapshots yet.';
+            col.appendChild(noSnap);
+          } else {
+            // Otherwise, group that playlist’s snapshots by date
+            const grouped = pl.snapshots.reduce((acc, snap) => {
+              acc[snap.date] = acc[snap.date] || [];
+              acc[snap.date].push(snap);
+              return acc;
+            }, {});
+
+            // Sort dates descending
+            const dates = Object.keys(grouped).sort((a, b) => (a < b ? 1 : -1));
+
+            // Create one button per date
+            dates.forEach(date => {
+              const btn = document.createElement('button');
+              btn.textContent = date;
+              btn.onclick = () => showSnapshots(pl.playlistId, date, grouped[date]);
+              calDiv.appendChild(btn);
+            });
+          }
+
+          // Append this column to the container
+          container.appendChild(col);
         });
       })
       .catch(err => {
-        document.getElementById('calendar').innerText = 'Failed to load data.';
         console.error(err);
+        document.getElementById('playlists').innerText = 'Failed to load data.';
       });
 
-    // 7) When a date button is clicked, display all snapshots under that date
-    function showSnapshots(date, snaps) {
-      const detailsDiv = document.getElementById('details');
-      detailsDiv.innerHTML = `<h2>Changes on ${date}</h2>`;
+    /**
+     * When a date button is clicked, show snapshots for that playlist on that date.
+     *
+     * @param {string} playlistId  – ID of the playlist whose details to show
+     * @param {string} date        – “YYYY-MM-DD” clicked
+     * @param {Array} snaps        – array of snapshot objects for that date
+     */
+    function showSnapshots(playlistId, date, snaps) {
+      const detailsDiv = document.getElementById(`details-${playlistId}`);
+      detailsDiv.innerHTML = `<h3>Changes on ${date}</h3>`;
 
       snaps.forEach(snap => {
         detailsDiv.innerHTML += `
           <div class="snapshot">
-            <div class="timestamp">
-              ${new Date(snap.timestamp).toLocaleTimeString()}
-            </div>
-            <strong>${snap.playlistName}</strong>
+            <div class="timestamp">${new Date(snap.timestamp).toLocaleTimeString()}</div>
             <p>${snap.description || '<em>(no description)</em>'}</p>
             <img src="${snap.imageUrl}" alt="Playlist image on ${date}" />
           </div>
