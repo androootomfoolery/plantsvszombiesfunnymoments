@@ -1,0 +1,186 @@
+/* ==========================
+   styles.css
+   ========================== */
+
+/* 1) Import a nicer web font for descriptions */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+/* 2) Body & Background */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('flower.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: #222; /* fallback text color */
+}
+
+/* 3) Main Heading */
+h1 {
+  text-align: center;
+  font-size: 2em;
+  margin: 1rem 0;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+
+/* 4) Month Navigator (◀ Month Year ▶) */
+#month-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#month-nav button {
+  background: rgba(0, 123, 255, 0.8);
+  border: none;
+  color: #fff;
+  font-size: 1.2em;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#month-nav button:hover {
+  background: rgba(0, 86, 179, 0.8);
+}
+
+#month-display {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(0,0,0,0.7);
+}
+
+/* 5) Calendar Container */
+.month-card {
+  max-width: 600px;
+  margin: 0 auto 2rem; /* center horizontally, with bottom margin */
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  padding: 1rem;
+}
+
+/* 5a) Calendar Table */
+table.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+table.calendar-table th {
+  padding: 6px 0;
+  background: #eaeaea;
+  font-size: 0.9em;
+  color: #333;
+}
+
+table.calendar-table td {
+  height: 40px;
+  vertical-align: top;
+  border: 1px solid #e2e2e2;
+  position: relative;
+  background: transparent; /* let the body background show */
+}
+
+table.calendar-table td .day-number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.85em;
+  color: #555;
+}
+
+table.calendar-table td.has-snapshot {
+  background: rgba(0, 123, 255, 0.8);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+table.calendar-table td.has-snapshot .day-number {
+  color: #fff;
+  font-weight: bold;
+}
+
+table.calendar-table td.has-snapshot:hover {
+  background: rgba(0, 86, 179, 0.8);
+}
+
+/* 6) Details Area (two side-by-side columns) */
+#details {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin: 2rem;
+}
+
+/* 6a) Each Playlist Column */
+.playlist-column {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  padding: 1rem;
+  min-width: 200px;
+}
+
+/* 6b) Playlist Title */
+.playlist-column h2 {
+  margin-top: 0;
+  font-size: 1.25em;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.25rem;
+  color: #333;
+}
+
+/* 7) Snapshot Entry */
+.snapshot {
+  border-bottom: 1px solid #eee;
+  padding: 0.75rem 0;
+}
+
+.snapshot:last-child {
+  border-bottom: none;
+}
+
+.timestamp {
+  font-size: 0.85em;
+  color: #555;
+  margin-bottom: 0.25em;
+}
+
+/* 8) Description Text */
+.description {
+  margin-bottom: 0.5rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1em;
+  line-height: 1.4;
+  color: #444;
+}
+
+/* 9) Image Styling:
+      • All images inside .snapshot should be the same width (e.g. 300px)
+      • Centered horizontally.
+      • Auto‐height to preserve aspect ratio.
+*/
+.snapshot img {
+  display: block;
+  margin: 0.5rem auto 0; /* top 0.5rem, auto left/right */
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* 10) “No snapshots” text style */
+.no-snapshots {
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  margin-top: 1rem;
+}
