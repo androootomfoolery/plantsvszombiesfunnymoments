@@ -1,14 +1,35 @@
 [
   {
     "playlistId": "7bGfzjckDQDDvAIMVe95jF",
-    "name": "Playlist 7bGfzjckDQDDvAIMVe95jF",
+    "name": "📧",
     "snapshots": [
       {
-        "timestamp": "2025-06-01T15:31:45.571Z",
+        "timestamp": "2025-06-01T20:44:42.512Z",
+        "date": "2025-06-01",
+        "playlistId": "7bGfzjckDQDDvAIMVe95jF",
+        "description": "test 7",
+        "imageUrl": "data/7bGfzjckDQDDvAIMVe95jF/2025-06-01T20-44-42-512Z-image.jpg"
+      },
+      {
+        "timestamp": "2025-06-01T20:32:34.747Z",
+        "date": "2025-06-01",
+        "playlistId": "7bGfzjckDQDDvAIMVe95jF",
+        "description": "test 6",
+        "imageUrl": "data/7bGfzjckDQDDvAIMVe95jF/2025-06-01T20-32-34-747Z-image.jpg"
+      },
+      {
+        "timestamp": "2025-06-01T20:18:23.616Z",
+        "date": "2025-06-01",
+        "playlistId": "7bGfzjckDQDDvAIMVe95jF",
+        "description": "test 5",
+        "imageUrl": "data/7bGfzjckDQDDvAIMVe95jF/2025-06-01T20-18-23-616Z-image.jpg"
+      },
+      {
+        "timestamp": "2025-06-01T19:23:51.404Z",
         "date": "2025-06-01",
         "playlistId": "7bGfzjckDQDDvAIMVe95jF",
         "description": "test 4",
-        "imageUrl": "data/7bGfzjckDQDDvAIMVe95jF/2025-06-01T15-31-45-571Z-image.jpg"
+        "imageUrl": "data/7bGfzjckDQDDvAIMVe95jF/2025-06-01T19-23-51-404Z-image.jpg"
       }
     ]
   }
