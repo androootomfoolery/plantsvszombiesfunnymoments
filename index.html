@@ -2,199 +2,321 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Playlist Change Calendar</title>
+  <title>Playlist Change Calendar (Stacked Details)</title>
 
-  <!--
-    Since this repo is served at:
-      https://andrewtomfohrde.github.io/forE/
-    the <base> ensures all relative URLs (history.json, data/…) resolve under /forE/
+  <!-- 
+    When served from GitHub Pages, <base href="/forE/"> 
+    ensures fetch('history.json') and image URLs resolve under /forE/.
   -->
   <base href="/forE/" />
 
   <style>
     body {
       font-family: sans-serif;
-      margin: 2em;
-      background: #f3f3f3;
+      margin: 0;
+      background: url('flower.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #222;
     }
     h1 {
+      text-align: center;
       font-size: 2em;
-      margin-bottom: 1em;
+      margin: 1rem 0;
+      color: #fff;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
     }
-
-    /* Container for the two playlists side by side */
-    .playlists-container {
-      display: flex;
+    /* Calendar Grid Styles */
+    .months-container {
+      display: grid;
       gap: 2rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      margin: 2rem;
     }
-
-    /* Each playlist column */
-    .playlist-column {
-      flex: 1;
-      background: white;
-      padding: 1em;
+    .month-card {
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      padding: 1rem;
+    }
+    .month-card h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.25em;
+      color: #333;
+    }
+    table.calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    table.calendar-table th {
+      padding: 4px 0;
+      background: #eaeaea;
+      font-weight: normal;
+      font-size: 0.9em;
+      color: #333;
+    }
+    table.calendar-table td {
+      height: 40px;
+      vertical-align: top;
+      border: 1px solid #e2e2e2;
+      position: relative;
+      background: transparent;
+    }
+    table.calendar-table td .day-number {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      font-size: 0.85em;
+      color: #555;
+    }
+    table.calendar-table td.has-snapshot {
+      background: rgba(0, 123, 255, 0.8);
+      cursor: pointer;
+    }
+    table.calendar-table td.has-snapshot .day-number {
+      color: #fff;
+      font-weight: bold;
+    }
+    table.calendar-table td.has-snapshot:hover {
+      background: rgba(0, 86, 179, 0.8);
     }
 
+    /* Details Styles (Stacked Vertically) */
+    #details {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin: 2rem;
+    }
+    .playlist-column {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      padding: 1rem;
+    }
     .playlist-column h2 {
       margin-top: 0;
-      font-size: 1.5em;
-      margin-bottom: 0.5em;
+      font-size: 1.25em;
+      margin-bottom: 0.5rem;
       text-align: center;
-    }
-
-    .calendar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 1em;
-    }
-
-    .calendar button {
-      padding: 6px 10px;
-      border: none;
-      background: #007bff;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85em;
-    }
-    .calendar button:hover {
-      background: #0056b3;
-    }
-
-    .details {
-      background: #fdfdfd;
-      padding: 1em;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .snapshot {
       border-bottom: 1px solid #ddd;
-      padding: 0.75em 0;
+      padding-bottom: 0.25rem;
+      color: #333;
+    }
+    .snapshot {
+      border-bottom: 1px solid #eee;
+      padding: 0.75rem 0;
     }
     .snapshot:last-child {
       border-bottom: none;
     }
-
-    .snapshot img {
-      max-width: 100%;
-      margin-top: 0.5em;
-      border-radius: 4px;
-    }
-
     .timestamp {
       font-size: 0.85em;
       color: #555;
       margin-bottom: 0.25em;
     }
-
-    /* If a playlist has no snapshots at all */
+    .description {
+      margin-bottom: 0.5rem;
+    }
+    .snapshot img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
     .no-snapshots {
-      color: #666;
       font-style: italic;
+      color: #666;
       text-align: center;
-      margin-top: 1em;
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>📅 Playlist Change Calendars</h1>
+  <h1>📅 Playlist Change Calendar</h1>
 
-  <div id="playlists" class="playlists-container">
-    <!-- Two columns (one per playlist) will be injected here -->
-  </div>
+  <!-- Calendar Grid -->
+  <div id="months" class="months-container"></div>
+
+  <!-- Stacked Details Area -->
+  <div id="details"></div>
 
   <script>
     fetch('history.json')
       .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status} - could not load history.json`);
+        if (!res.ok) throw new Error(`HTTP ${res.status} – could not load history.json`);
         return res.json();
       })
       .then(data => {
-        const container = document.getElementById('playlists');
-        container.innerHTML = ''; // Clear any placeholder
+        const allSnapshots = data.flatMap(pl =>
+          pl.snapshots.map(snap => ({
+            playlistId: pl.playlistId,
+            playlistName: pl.name,
+            ...snap
+          }))
+        );
 
-        // For each playlist object in history.json, build a column
-        data.forEach(pl => {
-          // Create a column wrapper
-          const col = document.createElement('div');
-          col.className = 'playlist-column';
+        if (allSnapshots.length === 0) {
+          document.getElementById('months').innerHTML =
+            '<div class="no-snapshots">No snapshots available.</div>';
+          return;
+        }
 
-          // Title: the real Spotify playlist name
+        const groupedByDate = allSnapshots.reduce((acc, snap) => {
+          acc[snap.date] = acc[snap.date] || [];
+          acc[snap.date].push(snap);
+          return acc;
+        }, {});
+
+        const monthKeys = Array.from(
+          new Set(Object.keys(groupedByDate).map(d => d.slice(0, 7)))
+        ).sort((a, b) => (a < b ? 1 : -1));
+
+        const monthsContainer = document.getElementById('months');
+        monthKeys.forEach(monthKey => {
+          const [yearStr, monthStr] = monthKey.split('-');
+          const year = parseInt(yearStr, 10);
+          const month = parseInt(monthStr, 10);
+
+          const card = document.createElement('div');
+          card.className = 'month-card';
+
+          const monthName = new Date(year, month - 1).toLocaleString('default', {
+            month: 'long', year: 'numeric'
+          });
           const title = document.createElement('h2');
-          title.textContent = pl.name;
-          col.appendChild(title);
+          title.textContent = monthName;
+          card.appendChild(title);
 
-          // Calendar (date buttons)
-          const calDiv = document.createElement('div');
-          calDiv.className = 'calendar';
-          calDiv.id = `calendar-${pl.playlistId}`; // unique ID so we can target it
-          col.appendChild(calDiv);
+          const table = document.createElement('table');
+          table.className = 'calendar-table';
 
-          // Details area
-          const detailsDiv = document.createElement('div');
-          detailsDiv.className = 'details';
-          detailsDiv.id = `details-${pl.playlistId}`; // unique ID for snapshots
-          col.appendChild(detailsDiv);
+          const thead = document.createElement('thead');
+          const headerRow = document.createElement('tr');
+          ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(dow => {
+            const th = document.createElement('th');
+            th.textContent = dow;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
 
-          // If no snapshots, show “No snapshots yet.”
-          if (!pl.snapshots || pl.snapshots.length === 0) {
-            const noSnap = document.createElement('div');
-            noSnap.className = 'no-snapshots';
-            noSnap.textContent = 'No snapshots yet.';
-            col.appendChild(noSnap);
-          } else {
-            // Otherwise, group that playlist’s snapshots by date
-            const grouped = pl.snapshots.reduce((acc, snap) => {
-              acc[snap.date] = acc[snap.date] || [];
-              acc[snap.date].push(snap);
-              return acc;
-            }, {});
+          const tbody = document.createElement('tbody');
+          const lastDay = new Date(year, month, 0).getDate();
+          const firstWeekday = new Date(year, month - 1, 1).getDay();
 
-            // Sort dates descending
-            const dates = Object.keys(grouped).sort((a, b) => (a < b ? 1 : -1));
+          let currentDay = 1;
+          let done = false;
 
-            // Create one button per date
-            dates.forEach(date => {
-              const btn = document.createElement('button');
-              btn.textContent = date;
-              btn.onclick = () => showSnapshots(pl.playlistId, date, grouped[date]);
-              calDiv.appendChild(btn);
-            });
+          for (let week = 0; week < 6 && !done; week++) {
+            const tr = document.createElement('tr');
+            for (let dow = 0; dow < 7; dow++) {
+              const td = document.createElement('td');
+              if (week === 0 && dow < firstWeekday) {
+                tr.appendChild(td);
+                continue;
+              }
+              if (currentDay > lastDay) {
+                tr.appendChild(td);
+                done = true;
+                continue;
+              }
+
+              const dayStr = String(currentDay).padStart(2, '0');
+              const fullDate = `${yearStr}-${monthStr}-${dayStr}`;
+
+              const dn = document.createElement('div');
+              dn.className = 'day-number';
+              dn.textContent = currentDay;
+              td.appendChild(dn);
+
+              if (groupedByDate[fullDate]) {
+                td.classList.add('has-snapshot');
+                td.onclick = () => {
+                  showSnapshotsForDate(fullDate, groupedByDate[fullDate], data);
+                  document.getElementById('details').scrollIntoView({ behavior: 'smooth' });
+                };
+              }
+
+              tr.appendChild(td);
+              currentDay++;
+            }
+            tbody.appendChild(tr);
           }
-
-          // Append this column to the container
-          container.appendChild(col);
+          table.appendChild(tbody);
+          card.appendChild(table);
+          monthsContainer.appendChild(card);
         });
       })
       .catch(err => {
         console.error(err);
-        document.getElementById('playlists').innerText = 'Failed to load data.';
+        document.getElementById('months').innerHTML =
+          '<div class="no-snapshots">Failed to load data.</div>';
       });
 
-    /**
-     * When a date button is clicked, show snapshots for that playlist on that date.
-     *
-     * @param {string} playlistId  – ID of the playlist whose details to show
-     * @param {string} date        – “YYYY-MM-DD” clicked
-     * @param {Array} snaps        – array of snapshot objects for that date
-     */
-    function showSnapshots(playlistId, date, snaps) {
-      const detailsDiv = document.getElementById(`details-${playlistId}`);
-      detailsDiv.innerHTML = `<h3>Changes on ${date}</h3>`;
+    function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
+      const detailsDiv = document.getElementById('details');
+      detailsDiv.innerHTML = '';
 
-      snaps.forEach(snap => {
-        detailsDiv.innerHTML += `
-          <div class="snapshot">
-            <div class="timestamp">${new Date(snap.timestamp).toLocaleTimeString()}</div>
-            <p>${snap.description || '<em>(no description)</em>'}</p>
-            <img src="${snap.imageUrl}" alt="Playlist image on ${date}" />
-          </div>
-        `;
+      const heading = document.createElement('h1');
+      heading.textContent = `Changes on ${date}`;
+      heading.style.fontSize = '1.5em';
+      heading.style.marginBottom = '1rem';
+      heading.style.textAlign = 'center';
+      heading.style.color = '#fff';
+      heading.style.textShadow = '0 0 5px rgba(0,0,0,0.8)';
+      detailsDiv.appendChild(heading);
+
+      const playlistOrder = allPlaylistsData.map(pl => pl.playlistId);
+
+      playlistOrder.forEach(pid => {
+        const col = document.createElement('div');
+        col.className = 'playlist-column';
+
+        const plObj = allPlaylistsData.find(pl => pl.playlistId === pid);
+        const plName = plObj.name;
+
+        const title = document.createElement('h2');
+        title.textContent = plName;
+        col.appendChild(title);
+
+        const snapsForThis = snapsOnDate.filter(snap => snap.playlistId === pid);
+        if (!snapsForThis || snapsForThis.length === 0) {
+          const noSnap = document.createElement('div');
+          noSnap.className = 'no-snapshots';
+          noSnap.textContent = '(no changes)';
+          col.appendChild(noSnap);
+        } else {
+          snapsForThis
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .forEach(snap => {
+              const snapDiv = document.createElement('div');
+              snapDiv.className = 'snapshot';
+
+              const ts = document.createElement('div');
+              ts.className = 'timestamp';
+              ts.textContent = new Date(snap.timestamp).toLocaleTimeString();
+              snapDiv.appendChild(ts);
+
+              const desc = document.createElement('div');
+              desc.className = 'description';
+              desc.innerHTML = snap.description
+                ? snap.description
+                : '<em>(no description)</em>';
+              snapDiv.appendChild(desc);
+
+              if (snap.imageUrl) {
+                const img = document.createElement('img');
+                img.src = snap.imageUrl;
+                img.alt = `Playlist image on ${date}`;
+                snapDiv.appendChild(img);
+              }
+
+              col.appendChild(snapDiv);
+            });
+        }
+
+        detailsDiv.appendChild(col);
       });
     }
   </script>
