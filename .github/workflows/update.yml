@@ -1,10 +1,13 @@
 name: Scheduled Spotify Snapshot
 
+# Tell GitHub we need write access to repository contents
+permissions:
+  contents: write
+
 on:
   schedule:
-    # Run every 5 minutes (you can adjust as needed)
-    - cron:  '*/5 * * * *'
-  workflow_dispatch:  # allows manual triggers from the Actions tab
+    - cron:  '*/5 * * * *'   # every 5 minutes
+  workflow_dispatch:
 
 jobs:
   update:
@@ -14,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true  # needed so the push step can use GITHUB_TOKEN
+          persist-credentials: true
 
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
