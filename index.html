@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Playlist Change Calendar</title>
 
-  <!-- IMPORTANT: because this is a "project site" under /forE/, we add a base href -->
+  <!-- Because this repo is served at /forE/, use this base href -->
   <base href="/forE/" />
 
   <style>
@@ -65,13 +65,9 @@
   <div id="details"></div>
 
   <script>
-    // 1) Fetch history.json relatively (no leading slash).
-    //    Because we have <base href="/forE/"> above, this actually requests:
-    //      https://andrewtomfohrde.github.io/forE/history.json
     fetch('history.json')
       .then(res => {
         if (!res.ok) {
-          // If history.json is missing or not yet generated, show an error
           throw new Error(`HTTP ${res.status} - could not load history.json`);
         }
         return res.json();
@@ -80,10 +76,10 @@
         const calendarDiv = document.getElementById('calendar');
         calendarDiv.innerHTML = ''; // clear “Loading dates…”
 
-        // Flatten all snapshots from all playlists
+        // Flatten all snapshots from all playlists, capturing the playlist 'name' field
         const allSnapshots = data.flatMap(pl =>
           pl.snapshots.map(snap => ({
-            name: pl.name,
+            playlistName: pl.name, // use the actual Spotify playlist name
             ...snap
           }))
         );
@@ -93,7 +89,7 @@
           return;
         }
 
-        // Group snapshots by date (YYYY-MM-DD)
+        // Group by date (YYYY-MM-DD)
         const grouped = allSnapshots.reduce((acc, snap) => {
           acc[snap.date] = acc[snap.date] || [];
           acc[snap.date].push(snap);
@@ -103,7 +99,7 @@
         // Sort dates descending (newest first)
         const dates = Object.keys(grouped).sort((a, b) => (a < b ? 1 : -1));
 
-        // Create one button per date
+        // Create a button for each date
         dates.forEach(date => {
           const btn = document.createElement('button');
           btn.textContent = date;
@@ -112,20 +108,18 @@
         });
       })
       .catch(err => {
-        // Show an error message if fetch fails (e.g. 404)
         document.getElementById('calendar').innerText = 'Failed to load data.';
         console.error(err);
       });
 
-    // 2) When a date button is clicked, show that day's snapshots
     function showSnapshots(date, snaps) {
       const detailsDiv = document.getElementById('details');
       detailsDiv.innerHTML = `<h2>Changes on ${date}</h2>`;
-      snaps.forEach(snap => {
+      snaps.forEach((snap) => {
         detailsDiv.innerHTML += `
           <div class="snapshot">
             <div class="timestamp">${new Date(snap.timestamp).toLocaleTimeString()}</div>
-            <strong>${snap.name}</strong>
+            <strong>${snap.playlistName}</strong>  <!-- show real name here -->
             <p>${snap.description || '<em>(no description)</em>'}</p>
             <img src="${snap.imageUrl}" alt="Playlist image on ${date}" />
           </div>
