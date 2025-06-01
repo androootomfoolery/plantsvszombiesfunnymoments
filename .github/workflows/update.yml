@@ -1,23 +1,23 @@
-# .github/workflows/update.yml
 name: Scheduled Spotify Snapshot
 
 on:
   schedule:
-    # Every 5 minutes
+    # Run every 5 minutes (you can adjust as needed)
     - cron:  '*/5 * * * *'
-  workflow_dispatch:  # allows manual run from GitHub UI
+  workflow_dispatch:  # allows manual triggers from the Actions tab
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true  # so we can push back
+          persist-credentials: true  # needed so the push step can use GITHUB_TOKEN
 
-      - name: Use Node.js 18
-        uses: actions/setup-node@v5
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
         with:
           node-version: '18.x'
           cache: 'npm'
