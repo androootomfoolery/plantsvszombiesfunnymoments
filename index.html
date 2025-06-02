@@ -4,245 +4,34 @@
   <meta charset="UTF-8" />
   <title>Playlist Change Calendar</title>
 
-  <!-- 
-    If you are testing locally with a simple server (e.g. `python -m http.server`),
-    leave this line commented. When ready to push to GitHub Pages under /forE/,
-    uncomment it so all fetch()/image URLs resolve under /forE/.
+  <!-- If you deploy under a GitHub Pages subfolder (e.g. /forE/), uncomment this:
+  <base href="/forE/" />
   -->
-  <!-- <base href="/forE/" />  -->
 
-  <!--  Link to the external CSS file  -->
+  <!-- Link to our “nice‐looking” CSS -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- ══════════ Page Heading ══════════ -->
   <h1>📅 Playlist Change Calendar</h1>
 
-  <!-- Month navigator: [◀] [ Month Year ] [▶] -->
-  <div id="month-nav">
-    <button id="prev-month">◀</button>
-    <div id="month-display">Loading…</div>
-    <button id="next-month">▶</button>
+  <!-- ══════════ Chalkboard “Wood Frame” Container ══════════ -->
+  <div id="calendar-container" class="month-card">
+    <!-- Month navigator: ◀ [ Month Year ] ▶ -->
+    <div id="month-nav" style="text-align: center; margin-bottom: 1rem;">
+      <button id="prev-month">◀</button>
+      <span id="month-display">Loading…</span>
+      <button id="next-month">▶</button>
+    </div>
+
+    <!-- JavaScript will inject a <table class="calendar-table"> here -->
+    <div id="calendar-placeholder"></div>
   </div>
 
-  <!-- Calendar for the current month will be injected here -->
-  <div id="calendar-container" class="month-card"></div>
-
-  <!-- Two side-by-side playlist columns appear here after clicking a date -->
+  <!-- ══════════ Details Area (two side‐by‐side columns) ══════════ -->
   <div id="details"></div>
 
-  <script>
-    let monthKeys = [];
-    let currentMonthIndex = 0;
-    let allPlaylistsData = [];
-    let groupedByDate = {};
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetch('history.json')
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status} — could not load history.json`);
-          return res.json();
-        })
-        .then(data => {
-          allPlaylistsData = data;
-
-          // Build a flat array of all snapshots, tagging playlistId & playlistName
-          const allSnapshots = data.flatMap(pl =>
-            pl.snapshots.map(snap => ({
-              playlistId: pl.playlistId,
-              playlistName: pl.name,
-              ...snap
-            }))
-          );
-
-          // Group by date (YYYY-MM-DD)
-          groupedByDate = allSnapshots.reduce((acc, snap) => {
-            acc[snap.date] = acc[snap.date] || [];
-            acc[snap.date].push(snap);
-            return acc;
-          }, {});
-
-          // Extract sorted month keys (“YYYY-MM”) newest-first
-          monthKeys = Array.from(
-            new Set(Object.keys(groupedByDate).map(d => d.slice(0, 7)))
-          ).sort((a, b) => (a < b ? 1 : -1));
-
-          currentMonthIndex = 0;
-          renderCurrentMonth();
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById('calendar-container').innerHTML =
-            '<div class="no-snapshots">Failed to load data.</div>';
-        });
-
-      document.getElementById('prev-month').addEventListener('click', () => {
-        if (!monthKeys.length) return;
-        currentMonthIndex = (currentMonthIndex + 1) % monthKeys.length;
-        renderCurrentMonth();
-      });
-      document.getElementById('next-month').addEventListener('click', () => {
-        if (!monthKeys.length) return;
-        currentMonthIndex = (currentMonthIndex - 1 + monthKeys.length) % monthKeys.length;
-        renderCurrentMonth();
-      });
-    });
-
-    function renderCurrentMonth() {
-      const container = document.getElementById('calendar-container');
-      container.innerHTML = ''; // clear old
-
-      const monthKey = monthKeys[currentMonthIndex]; // e.g. "2025-06"
-      const [yearStr, monthStr] = monthKey.split('-');
-      const year = parseInt(yearStr, 10);
-      const month = parseInt(monthStr, 10);
-
-      // Update the Month Year display
-      const humanMonth = new Date(year, month - 1).toLocaleString('default', {
-        month: 'long', year: 'numeric'
-      });
-      document.getElementById('month-display').textContent = humanMonth;
-
-      // Build the calendar <table>
-      const table = document.createElement('table');
-      table.className = 'calendar-table';
-
-      // Header row
-      const thead = document.createElement('thead');
-      const headerRow = document.createElement('tr');
-      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(dow => {
-        const th = document.createElement('th');
-        th.textContent = dow;
-        headerRow.appendChild(th);
-      });
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
-
-      // Body
-      const tbody = document.createElement('tbody');
-      const lastDay = new Date(year, month, 0).getDate();
-      const firstWeekday = new Date(year, month - 1, 1).getDay();
-
-      let currentDay = 1;
-      let done = false;
-
-      for (let week = 0; week < 6 && !done; week++) {
-        const tr = document.createElement('tr');
-        for (let dow = 0; dow < 7; dow++) {
-          const td = document.createElement('td');
-
-          if (week === 0 && dow < firstWeekday) {
-            tr.appendChild(td);
-            continue;
-          }
-          if (currentDay > lastDay) {
-            tr.appendChild(td);
-            done = true;
-            continue;
-          }
-
-          // Build “YYYY-MM-DD”
-          const dayStr = String(currentDay).padStart(2, '0');
-          const fullDate = `${yearStr}-${monthStr}-${dayStr}`;
-
-          // Show day number
-          const dn = document.createElement('div');
-          dn.className = 'day-number';
-          dn.textContent = currentDay;
-          td.appendChild(dn);
-
-          // If snapshots exist, highlight & attach click
-          if (groupedByDate[fullDate]) {
-            td.classList.add('has-snapshot');
-            td.onclick = () => {
-              showSnapshotsForDate(fullDate, groupedByDate[fullDate], allPlaylistsData);
-              document.getElementById('details').scrollIntoView({ behavior: 'smooth' });
-            };
-          }
-
-          tr.appendChild(td);
-          currentDay++;
-        }
-        tbody.appendChild(tr);
-      }
-
-      table.appendChild(tbody);
-      container.appendChild(table);
-    }
-
-    function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
-      const detailsDiv = document.getElementById('details');
-      detailsDiv.innerHTML = ''; // clear old
-
-      // Heading “Changes on YYYY-MM-DD”
-      const heading = document.createElement('h1');
-      heading.textContent = `Changes on ${date}`;
-      heading.style.fontSize = '1.5em';
-      heading.style.marginBottom = '1rem';
-      heading.style.textAlign = 'center';
-      heading.style.color = '#fff';
-      heading.style.textShadow = '0 0 5px rgba(0,0,0,0.8)';
-      detailsDiv.appendChild(heading);
-
-      // Playlist order as they appear in history.json
-      const playlistOrder = allPlaylistsData.map(pl => pl.playlistId);
-
-      playlistOrder.forEach(pid => {
-        const col = document.createElement('div');
-        col.className = 'playlist-column';
-
-        // Find playlist name
-        const plObj = allPlaylistsData.find(pl => pl.playlistId === pid);
-        const plName = plObj ? plObj.name : pid;
-
-        // Column title
-        const title = document.createElement('h2');
-        title.textContent = plName;
-        col.appendChild(title);
-
-        // Filter snapshots for this playlist on that date
-        const snapsForThis = snapsOnDate.filter(snap => snap.playlistId === pid);
-
-        if (!snapsForThis || snapsForThis.length === 0) {
-          const noSnap = document.createElement('div');
-          noSnap.className = 'no-snapshots';
-          noSnap.textContent = '(no changes)';
-          col.appendChild(noSnap);
-        } else {
-          snapsForThis
-            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-            .forEach(snap => {
-              const snapDiv = document.createElement('div');
-              snapDiv.className = 'snapshot';
-
-              // Timestamp
-              const ts = document.createElement('div');
-              ts.className = 'timestamp';
-              ts.textContent = new Date(snap.timestamp).toLocaleTimeString();
-              snapDiv.appendChild(ts);
-
-              // Description
-              const desc = document.createElement('div');
-              desc.className = 'description';
-              desc.innerHTML = snap.description
-                ? snap.description
-                : '<em>(no description)</em>';
-              snapDiv.appendChild(desc);
-
-              // Image (if any)
-              if (snap.imageUrl) {
-                const img = document.createElement('img');
-                img.src = snap.imageUrl;
-                img.alt = `Playlist image on ${date}`;
-                snapDiv.appendChild(img);
-              }
-
-              col.appendChild(snapDiv);
-            });
-        }
-
-        detailsDiv.appendChild(col);
-      });
-    }
-  </script>
+  <!-- ══════════ Interactive Calendar Logic ══════════ -->
+  <script src="calendar.js"></script>
 </body>
 </html>
