@@ -161,43 +161,66 @@ function renderCurrentMonth() {
 
 // 4) When a date cell is clicked, show its snapshots
 function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
-  const detailsDiv = document.getElementById("details");
-  detailsDiv.innerHTML = "";
-
-  const heading = document.createElement("h1");
-  heading.textContent = `Changes on ${formatDateShort(date)}`;
-  heading.className = "details-heading";
-  detailsDiv.appendChild(heading);
-
-  // 🔥 Create grid layout container
-  const gridContainer = document.createElement("div");
-  gridContainer.className = "snapshot-grid";
-
-  for (const snap of snapsOnDate) {
-    const tile = document.createElement("div");
-    tile.className = "snapshot-tile";
-
-    const time = document.createElement("div");
-    time.className = "timestamp";
-    time.textContent = new Date(snap.timestamp).toLocaleTimeString();
-
-    const desc = document.createElement("div");
-    desc.className = "description";
-    desc.textContent = snap.description || "(no description)";
-
-    const img = document.createElement("img");
-    img.src = snap.imageUrl;
-    img.alt = "Cover art";
-
-    tile.appendChild(time);
-    tile.appendChild(desc);
-    tile.appendChild(img);
-
-    gridContainer.appendChild(tile);
+    const detailsDiv = document.getElementById("details");
+    detailsDiv.innerHTML = "";
+  
+    const heading = document.createElement("h1");
+    heading.textContent = `Changes on ${formatDateShort(date)}`;
+    heading.className = "details-heading";
+    detailsDiv.appendChild(heading);
+  
+    const playlistMap = {};
+  
+    for (const snap of snapsOnDate) {
+      if (!playlistMap[snap.playlistId]) {
+        playlistMap[snap.playlistId] = {
+          name: snap.playlistName,
+          snapshots: [],
+        };
+      }
+      playlistMap[snap.playlistId].snapshots.push(snap);
+    }
+  
+    const wrapper = document.createElement("div");
+    wrapper.className = "playlist-columns-wrapper";
+  
+    for (const playlistId in playlistMap) {
+      const column = document.createElement("div");
+      column.className = "playlist-column";
+  
+      const title = document.createElement("h2");
+      title.textContent = playlistMap[playlistId].name;
+      column.appendChild(title);
+  
+      for (const snap of playlistMap[playlistId].snapshots) {
+        const tile = document.createElement("div");
+        tile.className = "snapshot";
+  
+        const time = document.createElement("div");
+        time.className = "timestamp";
+        time.textContent = new Date(snap.timestamp).toLocaleTimeString();
+  
+        const desc = document.createElement("div");
+        desc.className = "description";
+        desc.textContent = snap.description || "(no description)";
+  
+        const img = document.createElement("img");
+        img.src = snap.imageUrl;
+        img.alt = "Cover art";
+  
+        tile.appendChild(time);
+        tile.appendChild(desc);
+        tile.appendChild(img);
+  
+        column.appendChild(tile);
+      }
+  
+      wrapper.appendChild(column);
+    }
+  
+    detailsDiv.appendChild(wrapper);
   }
-
-  detailsDiv.appendChild(gridContainer);
-}
+  
 
 
 // Helper: Convert “YYYY-MM-DD” → “M/D/YY”

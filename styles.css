@@ -214,16 +214,29 @@
       8) Playlist Column Container (“playlist‐column”)
          – purely a white‐ish box so text is readable
       ---------------------------------------------------- */
-   .playlist-column {
-     background-color: rgba(255, 255, 255, 0.95);
-     border: 2px solid var(--wood-brown);
-     border-radius: 8px;
-     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-     padding: 1rem;
-     flex: 1 1 300px;   
-     max-width: 550px;
-     box-sizing: border-box; 
-    } 
+      .playlist-column {
+        display: flex;
+        flex-direction: column;
+        background: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 1rem;
+        flex: 1 1 0;               /* stretch evenly across the row */
+        max-width: 550px;
+        min-height: 100%;          /* ensure height matches siblings */
+        box-sizing: border-box;
+      }
+        
+  .playlist-columns-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch; /* 🔥 this is what makes heights match */
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+      
    
    .playlist-column h2 {
      background-color: rgba(240, 240, 240, 0.95);
@@ -268,24 +281,30 @@
    
    /* 10) Ensure the <img> always sits on a semi‐opaque white panel */
    .snapshot img {
-     display: inline-block;
-     max-width: 100%;
-     height: auto;
-     margin: 0 auto;
-     background-color: rgba(255, 255, 255, 0.9);
-     border: 2px solid var(--wood-brown);
-     border-radius: 4px;
-     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-   }
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    height: 240px; /* 👈 force fixed height */
+    object-fit: cover; /* 👈 crop and center nicely */
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--wood-brown);
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
    
    /* 11) Timestamp & Description inside each bark tile */
    .timestamp {
-     font-family: 'Roboto', sans-serif;
-     font-size: 0.9rem;
+     font-family: 'Press Start 2P', monospace;
+     font-size: 0.75rem;
      color: #555;
      margin-bottom: 0.4rem;
    }
    
+   .details-heading,
+    .playlist-column h2 {
+  font-family: 'Press Start 2P', cursive;
+}
    .description {
      font-family: 'Patrick Hand', cursive;
      font-size: 1rem;
@@ -357,4 +376,28 @@
     border-radius: 4px;
   }
   
-
+  .playlist-columns-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch; /* 🔥 this is what makes heights match */
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .details-heading {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85rem;
+    text-align: center;
+    color: var(--chalk-white);
+    background-color: var(--chalkboard-bg);
+    padding: 0.8rem 1rem;
+    margin: 1rem auto;
+    border: 2px solid var(--wood-brown);
+    border-radius: 8px;
+    width: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
