@@ -124,7 +124,7 @@ function renderCurrentMonth() {
       }
 
       // If we have passed the last day of this month
-      if (currentDay > lastDfay) {
+      if (currentDay > lastDay) {
         tr.appendChild(td);
         done = true;
         continue;
@@ -161,44 +161,44 @@ function renderCurrentMonth() {
 
 // 4) When a date cell is clicked, show its snapshots
 function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
-    const detailsDiv = document.getElementById("details");
-    detailsDiv.innerHTML = "";
-  
-    const heading = document.createElement("h1");
-    heading.textContent = `Changes on ${formatDateShort(date)}`;
-    heading.className = "details-heading";
-    detailsDiv.appendChild(heading);
-  
-    // 🔥 Create grid layout container
-    const gridContainer = document.createElement("div");
-    gridContainer.className = "snapshot-grid";
-  
-    for (const snap of snapsOnDate) {
-      const tile = document.createElement("div");
-      tile.className = "snapshot-tile";
-  
-      const time = document.createElement("div");
-      time.className = "timestamp";
-      time.textContent = new Date(snap.timestamp).toLocaleTimeString();
-  
-      const desc = document.createElement("div");
-      desc.className = "description";
-      desc.textContent = snap.description || "(no description)";
-  
-      const img = document.createElement("img");
-      img.src = snap.imageUrl;
-      img.alt = "Cover art";
-  
-      tile.appendChild(time);
-      tile.appendChild(desc);
-      tile.appendChild(img);
-  
-      gridContainer.appendChild(tile);
-    }
-  
-    detailsDiv.appendChild(gridContainer);
+  const detailsDiv = document.getElementById("details");
+  detailsDiv.innerHTML = "";
+
+  const heading = document.createElement("h1");
+  heading.textContent = `Changes on ${formatDateShort(date)}`;
+  heading.className = "details-heading";
+  detailsDiv.appendChild(heading);
+
+  // 🔥 Create grid layout container
+  const gridContainer = document.createElement("div");
+  gridContainer.className = "snapshot-grid";
+
+  for (const snap of snapsOnDate) {
+    const tile = document.createElement("div");
+    tile.className = "snapshot-tile";
+
+    const time = document.createElement("div");
+    time.className = "timestamp";
+    time.textContent = new Date(snap.timestamp).toLocaleTimeString();
+
+    const desc = document.createElement("div");
+    desc.className = "description";
+    desc.textContent = snap.description || "(no description)";
+
+    const img = document.createElement("img");
+    img.src = snap.imageUrl;
+    img.alt = "Cover art";
+
+    tile.appendChild(time);
+    tile.appendChild(desc);
+    tile.appendChild(img);
+
+    gridContainer.appendChild(tile);
   }
-  
+
+  detailsDiv.appendChild(gridContainer);
+}
+
 
 // Helper: Convert “YYYY-MM-DD” → “M/D/YY”
 function formatDateShort(dateStr) {
