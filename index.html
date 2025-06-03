@@ -4,34 +4,58 @@
   <meta charset="UTF-8" />
   <title>Playlist Change Calendar</title>
 
-  <!-- If you deploy under a GitHub Pages subfolder (e.g. /forE/), uncomment this:
-  <base href="/forE/" />
+  <!-- 
+    If you’re publishing under a GitHub Pages subfolder (e.g. /forE/), uncomment the next line:
+    <base href="/forE/" />
   -->
 
-  <!-- Link to our “nice‐looking” CSS -->
+  <!-- 1) Google Fonts: “Patrick Hand” for headings & descriptions, “Roboto” for timestamps -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@300;400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- 2) Our custom stylesheet -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- ══════════ Page Heading ══════════ -->
-  <h1>📅 Playlist Change Calendar</h1>
+  <!-- ======================================
+       Main Page Heading
+       ====================================== -->
+  <header>
+    <h1>📅 Playlist Change Calendar</h1>
+  </header>
 
-  <!-- ══════════ Chalkboard “Wood Frame” Container ══════════ -->
-  <div id="calendar-container" class="month-card">
-    <!-- Month navigator: ◀ [ Month Year ] ▶ -->
-    <div id="month-nav" style="text-align: center; margin-bottom: 1rem;">
-      <button id="prev-month">◀</button>
-      <span id="month-display">Loading…</span>
-      <button id="next-month">▶</button>
+  <!-- ======================================
+       Calendar Section
+       ====================================== -->
+  <section id="calendar-section">
+    <!-- Month‐Navigator sits inside the “wood frame” -->
+    <div id="calendar-container" class="month-card">
+      <div id="month-nav">
+        <button id="prev-month" aria-label="Previous Month">◀</button>
+        <span id="month-display">Loading…</span>
+        <button id="next-month" aria-label="Next Month">▶</button>
+      </div>
+      <div id="calendar-placeholder"></div>
     </div>
+  </section>
 
-    <!-- JavaScript will inject a <table class="calendar-table"> here -->
-    <div id="calendar-placeholder"></div>
-  </div>
+  <!-- ======================================
+       Details Section (two‐column snapshot panels)
+       ====================================== -->
+  <section id="details-section">
+    <div id="details"></div>
+  </section>
 
-  <!-- ══════════ Details Area (two side‐by‐side columns) ══════════ -->
-  <div id="details"></div>
-
-  <!-- ══════════ Interactive Calendar Logic ══════════ -->
+  <!-- ======================================
+       Interactive Calendar Logic
+       calendar.js contains all the code that:
+         • fetches history.json
+         • builds each month’s table
+         • animates left/right transitions
+         • populates the two side‐by‐side playlist columns
+       ====================================== -->
   <script src="calendar.js"></script>
 </body>
 </html>

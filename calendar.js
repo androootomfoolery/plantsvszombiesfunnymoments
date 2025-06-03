@@ -1,78 +1,74 @@
-// ────────── 1) STATE VARIABLES ──────────
-let monthKeys = [];              
-let currentMonthIndex = 0;       
-let allPlaylistsData = [];       
-let groupedByDate = {};          
+// ────────── calendar.js ──────────
 
+// 1) State Variables
+let monthKeys = [];
+let currentMonthIndex = 0;
+let allPlaylistsData = [];
+let groupedByDate = {};
 
+// 2) Once the page’s DOM is ready, fetch history.json & wire up arrows
 document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.getElementById("prev-month");
   const nextBtn = document.getElementById("next-month");
 
-  // ─── 2) LOAD history.json ───
+  // 2a) Load history.json
   fetch("history.json")
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status} – could not load history.json`);
-      }
+    .then((res) => {
+      if (!res.ok) throw new Error(`HTTP ${res.status} – could not load history.json`);
       return res.json();
     })
-    .then(data => {
+    .then((data) => {
       allPlaylistsData = data;
 
-      // Flatten & group all snapshots by date "YYYY-MM-DD"
-      const allSnapshots = data.flatMap(pl =>
-        pl.snapshots.map(snap => ({
+      // Flatten all snapshots & tag with playlistId/name
+      const allSnapshots = data.flatMap((pl) =>
+        pl.snapshots.map((snap) => ({
           playlistId: pl.playlistId,
           playlistName: pl.name,
-          ...snap
+          ...snap,
         }))
       );
+
+      // Group by “YYYY-MM-DD”
       groupedByDate = allSnapshots.reduce((acc, snap) => {
         if (!acc[snap.date]) acc[snap.date] = [];
         acc[snap.date].push(snap);
         return acc;
       }, {});
 
-      // Extract unique “YYYY-MM” keys, sort newest-first
+      // Build unique “YYYY-MM” month keys, sort newest → oldest
       monthKeys = Array.from(
-        new Set(Object.keys(groupedByDate).map(d => d.slice(0, 7)))
+        new Set(Object.keys(groupedByDate).map((d) => d.slice(0, 7)))
       ).sort((a, b) => (a < b ? 1 : -1));
 
-      // Show the first (newest) month immediately
       currentMonthIndex = 0;
       renderCurrentMonth();
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       document.getElementById("calendar-placeholder").innerHTML =
         '<div class="no-snapshots">Failed to load data.</div>';
       document.getElementById("month-display").textContent = "—";
     });
 
-  // ─── 3) WIRE UP ARROW BUTTONS ───
+  // 2b) Hook up the left/right arrow buttons
   prevBtn.addEventListener("click", () => {
-    console.log("◀ clicked; currentMonthIndex was", currentMonthIndex);
     if (!monthKeys.length) return;
     currentMonthIndex = (currentMonthIndex + 1) % monthKeys.length;
-    console.log("◀ updated currentMonthIndex to", currentMonthIndex);
     renderCurrentMonth();
   });
-  
+
   nextBtn.addEventListener("click", () => {
-    console.log("▶ clicked; currentMonthIndex was", currentMonthIndex);
     if (!monthKeys.length) return;
     currentMonthIndex = (currentMonthIndex - 1 + monthKeys.length) % monthKeys.length;
-    console.log("▶ updated currentMonthIndex to", currentMonthIndex);
     renderCurrentMonth();
   });
 });
 
-
-// ────────── 4) RENDER A GIVEN MONTH AS A TABLE ──────────
+// 3) Renders the calendar for the current monthKey
 function renderCurrentMonth() {
   const placeholder = document.getElementById("calendar-placeholder");
-  placeholder.innerHTML = ""; // clear previous calendar or message
+  placeholder.innerHTML = ""; // clear old content
 
   if (!monthKeys.length) {
     placeholder.innerHTML = '<div class="no-snapshots">No snapshots yet.</div>';
@@ -80,28 +76,26 @@ function renderCurrentMonth() {
     return;
   }
 
-  // Which monthKey are we on? (e.g. "2025-06")
-  const monthKey = monthKeys[currentMonthIndex];
+  const monthKey = monthKeys[currentMonthIndex]; // e.g. "2025-06"
   const [yearStr, monthStr] = monthKey.split("-");
   const year = parseInt(yearStr, 10);
-  const month = parseInt(monthStr, 10); // 1-based
+  const month = parseInt(monthStr, 10);
 
-  // Update the “June 2025” (for example) text
+  // Update the “June 2025” label
   const humanMonth = new Date(year, month - 1).toLocaleString("default", {
     month: "long",
-    year: "numeric"
+    year: "numeric",
   });
-  
   document.getElementById("month-display").textContent = humanMonth;
 
-  // Build a <table> for that month
+  // Build a <table> for this month
   const table = document.createElement("table");
   table.className = "calendar-table";
 
-  // Header row: Sun, Mon, Tue, Wed, Thu, Fri, Sat
+  // 3a) Header row (Sun Mon Tue … Sat)
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(dow => {
+  ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((dow) => {
     const th = document.createElement("th");
     th.textContent = dow;
     headerRow.appendChild(th);
@@ -109,42 +103,44 @@ function renderCurrentMonth() {
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
-  // Body: up to 6 weeks
+  // 3b) Body rows (up to 6 weeks)
   const tbody = document.createElement("tbody");
-  const lastDay = new Date(year, month, 0).getDate();          // e.g. 30
-  const firstWeekday = new Date(year, month - 1, 1).getDay();   // 0=Sun…6=Sat
+  const lastDay = new Date(year, month, 0).getDate();
+  const firstWeekday = new Date(year, month - 1, 1).getDay();
 
   let currentDay = 1;
   let done = false;
+
   for (let week = 0; week < 6 && !done; week++) {
     const tr = document.createElement("tr");
+
     for (let dow = 0; dow < 7; dow++) {
       const td = document.createElement("td");
 
-      // Before day 1 appears (first row)
+      // If we haven’t reached day 1 of the month yet
       if (week === 0 && dow < firstWeekday) {
         tr.appendChild(td);
         continue;
       }
 
-      // After lastDay, leave blank
-      if (currentDay > lastDay) {
+      // If we have passed the last day of this month
+      if (currentDay > lastDfay) {
         tr.appendChild(td);
         done = true;
         continue;
       }
 
-      // Otherwise, put the day number inside
+      // Otherwise, show the day number in chalk style
       const dn = document.createElement("div");
       dn.className = "day-number";
       dn.textContent = currentDay;
       td.appendChild(dn);
 
-      // Full date string “YYYY-MM-DD”
+      // Build “YYYY-MM-DD”
       const dayStr = String(currentDay).padStart(2, "0");
       const fullDate = `${yearStr}-${monthStr}-${dayStr}`;
 
-      // If there are snapshots for this date, outline it and make it clickable
+      // If there are snapshots that day, highlight and attach click
       if (groupedByDate[fullDate]) {
         td.classList.add("has-snapshot");
         td.onclick = () => {
@@ -160,86 +156,51 @@ function renderCurrentMonth() {
   }
 
   table.appendChild(tbody);
-  placeholder.appendChild(table);
+  document.getElementById("calendar-placeholder").appendChild(table);
 }
 
-
-// ────────── 5) WHEN A DATE IS CLICKED, SHOW SNAPSHOTS BELOW ──────────
+// 4) When a date cell is clicked, show its snapshots
 function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
-  const detailsDiv = document.getElementById("details");
-  detailsDiv.innerHTML = ""; // clear old columns
-
-  // Heading “Changes on M/D/YY”
-  const heading = document.createElement("h1");
-  heading.textContent = `Changes on ${formatDateShort(date)}`;
-  heading.style.fontSize = "1.5rem";
-  heading.style.marginBottom = "1rem";
-  heading.style.textAlign = "center";
-  heading.style.color = "#fff";
-  heading.style.textShadow = "0 0 5px rgba(0,0,0,0.8)";
-  detailsDiv.appendChild(heading);
-
-  // Use the same playlist order that came from history.json
-  const playlistOrder = allPlaylistsData.map(pl => pl.playlistId);
-
-  playlistOrder.forEach(pid => {
-    const col = document.createElement("div");
-    col.className = "playlist-column";
-
-    // Look up the playlist’s “name”
-    const plObj = allPlaylistsData.find(pl => pl.playlistId === pid);
-    const plName = plObj ? plObj.name : pid;
-
-    // Title in a friendlier, hand-written font
-    const title = document.createElement("h2");
-    title.textContent = plName;
-    col.appendChild(title);
-
-    // Find snapshots for this playlist on that date:
-    const snapsForThis = snapsOnDate.filter(snap => snap.playlistId === pid);
-
-    if (!snapsForThis.length) {
-      // If none, show “(no changes)”
-      const noSnap = document.createElement("div");
-      noSnap.className = "no-snapshots";
-      noSnap.textContent = "(no changes)";
-      col.appendChild(noSnap);
-    } else {
-      // Sort newest-first
-      snapsForThis.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      snapsForThis.forEach(snap => {
-        const snapDiv = document.createElement("div");
-        snapDiv.className = "snapshot";
-
-        // Timestamp
-        const ts = document.createElement("div");
-        ts.className = "timestamp";
-        ts.textContent = new Date(snap.timestamp).toLocaleTimeString();
-        snapDiv.appendChild(ts);
-
-        // Description
-        const desc = document.createElement("div");
-        desc.className = "description";
-        desc.innerHTML = snap.description ? snap.description : "<em>(no description)</em>";
-        snapDiv.appendChild(desc);
-
-        // Image (if present)
-        if (snap.imageUrl) {
-          const img = document.createElement("img");
-          img.src = snap.imageUrl;
-          img.alt = `Playlist image on ${formatDateShort(date)}`;
-          snapDiv.appendChild(img);
-        }
-
-        col.appendChild(snapDiv);
-      });
+    const detailsDiv = document.getElementById("details");
+    detailsDiv.innerHTML = "";
+  
+    const heading = document.createElement("h1");
+    heading.textContent = `Changes on ${formatDateShort(date)}`;
+    heading.className = "details-heading";
+    detailsDiv.appendChild(heading);
+  
+    // 🔥 Create grid layout container
+    const gridContainer = document.createElement("div");
+    gridContainer.className = "snapshot-grid";
+  
+    for (const snap of snapsOnDate) {
+      const tile = document.createElement("div");
+      tile.className = "snapshot-tile";
+  
+      const time = document.createElement("div");
+      time.className = "timestamp";
+      time.textContent = new Date(snap.timestamp).toLocaleTimeString();
+  
+      const desc = document.createElement("div");
+      desc.className = "description";
+      desc.textContent = snap.description || "(no description)";
+  
+      const img = document.createElement("img");
+      img.src = snap.imageUrl;
+      img.alt = "Cover art";
+  
+      tile.appendChild(time);
+      tile.appendChild(desc);
+      tile.appendChild(img);
+  
+      gridContainer.appendChild(tile);
     }
+  
+    detailsDiv.appendChild(gridContainer);
+  }
+  
 
-    detailsDiv.appendChild(col);
-  });
-}
-
-// ────────── HELPER: “YYYY-MM-DD” → “M/D/YY” ──────────
+// Helper: Convert “YYYY-MM-DD” → “M/D/YY”
 function formatDateShort(dateStr) {
   const [YYYY, MM, DD] = dateStr.split("-");
   const m = parseInt(MM, 10);

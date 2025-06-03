@@ -1,176 +1,360 @@
-/* ==========================
+/* ====================================================
    styles.css
-   ========================== */
+   ==================================================== */
 
-/* 1) Import Patrick Hand + Roboto from Google */
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@300;400&display=swap');
+/* ----------------------------------------------------
+   1) Google Fonts – Patrick Hand (headings) & Roboto
+   ---------------------------------------------------- */
+   @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@300;400&display=swap');
 
-/* 2) Root variables for easy theming */
-:root {
-  --wood-brown: #8B5E3C;
-  --chalkboard-bg: #2B2B2B;
-  --chalk-white: #F5F5F5;
-  --cell-fill: #3A3A3A;
-  --header-bg: #444444;
-  --highlight: #81C784;
-}
 
-/* Body & page heading */
-body {
-  font-family: sans-serif;
-  margin: 0;
-  background: url('flower.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: #222; /* fallback text color */
-}
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  margin: 1rem 0;
-  color: #fff;
-  text-shadow: 0 0 5px rgba(0,0,0,0.8);
-}
+   /* ----------------------------------------------------
+      2) CSS Variables → “wood + chalkboard” theme colors
+      ---------------------------------------------------- */
+   :root {
+     /* The “wood‐brown” color used for borders, outlines */
+     --wood-brown: #8b5e3c;
+     /* The chalkboard surface (dark charcoal) */
+     --chalkboard-bg: #2b2b2b;
+     /* Off‐white chalk writing */
+     --chalk-white: #f5f5f5;
+     /* The slightly lighter “square” between cell borders */
+     --cell-fill: #3a3a3a;
+     /* Slightly lighter row header background */
+     --header-bg: #444444;
+     /* Chalk‐green highlight for days with snapshots */
+     --highlight: #81c784;
+     /* A semi‐opaque overlay to darken the page background */
+     --overlay: rgba(0, 0, 0, 0.45);
+     /* Accent text color (off‐white faintly yellow) */
+     --accent: #f5eeda;
+   }
+   
+   
+   /* ----------------------------------------------------
+      3) Global Reset /
+         Body background / Overlay
+      ---------------------------------------------------- */
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+   
+   html, body {
+     height: 100%;
+   }
+   
+   body {
+     /* Full‐screen “flower” background */
+     background: url('flower.jpeg') no-repeat center center fixed;
+     background-size: cover;
+     font-family: 'Roboto', sans-serif;
+     color: #222;
+   }
+   
+   /* A dark overlay over the flower background for readability */
+   body::before {
+     content: "";
+     position: fixed;
+     inset: 0;
+     background-color: var(--overlay);
+     z-index: -1;
+   }
+   
+   
+   /* ----------------------------------------------------
+      4) Page Header (“Playlist Change Calendar”)
+      ---------------------------------------------------- */
+   header {
+     text-align: center;
+     margin: 1.5rem 0 1rem 0;
+   }
+   
+   header h1 {
+     font-family: 'Patrick Hand', cursive;
+     font-size: 2.5rem;
+     color: var(--accent);
+     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+   }
+   
+   
+   /* ----------------------------------------------------
+      5) Calendar Section (Wood frame + Chalkboard)
+      ---------------------------------------------------- */
+   #calendar-section {
+     display: flex;
+     justify-content: center;
+     margin-bottom: 2rem;
+   }
+   
+   .month-card {
+     background: var(--chalkboard-bg);      /* chalkboard “board” */
+     border: 8px solid var(--wood-brown);   /* thick wood frame */
+     border-radius: 8px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+     padding: 1rem;
+     width: 550px;                          /* fixed width for large calendar */
+     max-width: 90%;
+     position: relative;
+   }
+   
+   #month-nav {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 1rem;
+     margin-bottom: 1rem;
+   }
+   
+   #month-display {
+     font-family: 'Patrick Hand', cursive;
+     font-size: 1.5rem;
+     color: var(--chalk-white);
+     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+   }
+   
+   #prev-month,
+   #next-month {
+     background-color: var(--wood-brown);
+     border: none;
+     color: var(--chalk-white);
+     font-size: 1.2rem;
+     padding: 0.3rem 0.8rem;
+     border-radius: 4px;
+     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+     cursor: pointer;
+     transition: background-color 0.2s ease;
+   }
+   
+   #prev-month:hover,
+   #next-month:hover {
+     background-color: #704b2a;  /* slightly darker wood on hover */
+   }
+   
+   
+   /* ----------------------------------------------------
+      6) Chalkboard Table (“calendar‐table”)
+      ---------------------------------------------------- */
+   .calendar-table {
+     width: 100%;
+     border-collapse: collapse;
+     table-layout: fixed;
+   }
+   
+   .calendar-table th {
+     padding: 0.6rem 0;
+     text-transform: uppercase;
+     letter-spacing: 0.05em;
+     font-family: 'Patrick Hand', cursive;
+     font-size: 1rem;
+     color: var(--chalk-white);
+     background: transparent;
+     border-bottom: 2px solid var(--wood-brown);
+   }
+   
+   .calendar-table td {
+     width: calc(100% / 7);
+     height: 60px;                   /* larger clickable area */
+     vertical-align: top;
+     border: 1px solid var(--wood-brown);
+     background: var(--cell-fill);
+     position: relative;
+     transition: background 0.2s ease;
+   }
+   
+   .calendar-table td:hover {
+     background: #333333;            /* slightly darker on hover */
+   }
+   
+   .calendar-table td .day-number {
+     position: absolute;
+     top: 6px;
+     left: 6px;
+     font-family: 'Patrick Hand', cursive;
+     font-size: 1rem;
+     color: var(--chalk-white);
+   }
+   
+   .calendar-table td.has-snapshot {
+     border: 2px solid var(--highlight);
+   }
+   
+   .calendar-table td.has-snapshot:hover {
+     background: #2a2a2a;
+   }
+   
+   .no-snapshots {
+     font-family: 'Patrick Hand', cursive;
+     font-size: 1.1rem;
+     color: #bbb;
+     text-align: center;
+     padding: 2rem 0;
+   }
+   
+   
+   /* ----------------------------------------------------
+      7) Details Section (two side‐by‐side columns)
+      ---------------------------------------------------- */
+   #details-section {
+     display: flex;
+     justify-content: center;
+     margin-bottom: 3rem;
+     padding: 0 1rem;
+   }
+   
+   #details {
+    display: block;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+   
+   /* ----------------------------------------------------
+      8) Playlist Column Container (“playlist‐column”)
+         – purely a white‐ish box so text is readable
+      ---------------------------------------------------- */
+   .playlist-column {
+     background-color: rgba(255, 255, 255, 0.95);
+     border: 2px solid var(--wood-brown);
+     border-radius: 8px;
+     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+     padding: 1rem;
+     flex: 1 1 300px;   
+     max-width: 550px;
+     box-sizing: border-box; 
+    } 
+   
+   .playlist-column h2 {
+     background-color: rgba(240, 240, 240, 0.95);
+     margin: -1rem -1rem 1rem -1rem;
+     padding: 0.5rem 0;
+     text-align: center;
+     font-family: 'Patrick Hand', cursive;
+     font-size: 1.4rem;
+     color: #333;
+     border-bottom: 1px dashed var(--wood-brown);
+   }
+   
+   
+   /* ----------------------------------------------------
+      9) Individual Snapshot Box (“snapshot”):
+         – Bark behind each snapshot tile
+         – Flower border via border‐image
+         – Semi‐opaque white behind <img> so it doesn’t “disappear”
+      ---------------------------------------------------- */
+   .snapshot {
+     position: relative;
+     text-align: center;
+     margin-bottom: 1.5rem;
+   
+     /* 9a) Bark “wood‐texture” background behind each tile */
+     background: url('bark.jpg') no-repeat center center;
+     background-size: cover;
+   
+     /* 9b) Floral border around that bark box */
+     border: 16px solid transparent;          /* allocate space for border‐image */
+     border-image-source: url('flower-border.png');
+     border-image-slice: 30 fill;            /* slice out the corners/edges & fill center if needed */
+     border-image-width: 16px;               /* how thick that border‐image should be */
+     border-image-outset: 0;                 /* do not extend beyond box */
+     border-image-repeat: stretch;           /* stretch edges/corners instead of tiling */
+     border-radius: 8px;                     /* slight rounding so flowers look natural */
+     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+   
+     /* 9c) Padding so timestamp/description don’t butt right against bark */
+     padding: 1rem;
+   }
+   
+   /* 10) Ensure the <img> always sits on a semi‐opaque white panel */
+   .snapshot img {
+     display: inline-block;
+     max-width: 100%;
+     height: auto;
+     margin: 0 auto;
+     background-color: rgba(255, 255, 255, 0.9);
+     border: 2px solid var(--wood-brown);
+     border-radius: 4px;
+     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+   }
+   
+   /* 11) Timestamp & Description inside each bark tile */
+   .timestamp {
+     font-family: 'Roboto', sans-serif;
+     font-size: 0.9rem;
+     color: #555;
+     margin-bottom: 0.4rem;
+   }
+   
+   .description {
+     font-family: 'Patrick Hand', cursive;
+     font-size: 1rem;
+     color: #333;
+     line-height: 1.4;
+     margin-bottom: 0.6rem;
+     padding-left: 0.3rem;
+   }
+   
+   
+   /* ----------------------------------------------------
+      12) Responsive Tweak – Smaller screens
+      ---------------------------------------------------- */
+   @media (max-width: 600px) {
+     .month-card {
+       width: 100%;
+       padding: 0.5rem;
+     }
+     #month-nav {
+       flex-direction: column;
+       gap: 0.5rem;
+     }
+     #month-display {
+       font-size: 1.2rem;
+     }
+     .calendar-table td {
+       height: 45px;
+     }
+   }
+   .snapshot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .snapshot-tile {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--wood-brown);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .snapshot-tile:hover {
+    transform: scale(1.05);
+  }
+  
+  .snapshot-tile .timestamp {
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.95rem;
+  }
+  
+  .snapshot-tile .description {
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .snapshot-tile img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
 
-/* Month Navigator buttons & label */
-#month-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-#month-display {
-  font-family: 'Patrick Hand', cursive;
-  font-size: 1.25rem;
-  color: #fff;
-  text-shadow: 0 0 3px rgba(0,0,0,0.7);
-}
-#prev-month, #next-month {
-  background: #A36F3F;
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  cursor: pointer;
-}
-#prev-month:hover, #next-month:hover {
-  background: #8C5C33;
-}
-
-/* The “wooden chalkboard frame” that holds the table */
-.month-card {
-  background: var(--chalkboard-bg);
-  border: 8px solid var(--wood-brown);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  padding: 1rem;
-  max-width: 600px;    /* wider so calendar is bigger */
-  margin: 2rem auto;   /* centered horizontally, with vertical spacing */
-}
-
-/* The calendar table itself */
-.calendar-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-.calendar-table th {
-  background: transparent;
-  color: #EEE;
-  font-family: 'Patrick Hand', cursive;
-  font-size: 0.9rem;
-  padding: 0.5rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 2px solid var(--wood-brown);
-}
-.calendar-table td {
-  height: 50px;  /* bigger cells */
-  vertical-align: top;
-  border: 1px solid var(--wood-brown);
-  position: relative;
-  background: var(--cell-fill);
-}
-.calendar-table td .day-number {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  font-family: 'Patrick Hand', cursive;
-  font-size: 1rem;
-  color: #EEE;
-}
-.calendar-table td.has-snapshot {
-  background: var(--chalkboard-bg);
-  cursor: pointer;
-  border: 2px solid var(--highlight);
-}
-.calendar-table td.has-snapshot:hover {
-  background: #1F1F1F;
-}
-
-/* Details area: two side–by–side columns */
-#details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin: 2rem;
-}
-.playlist-column {
-  flex: 1 1 300px;
-  max-width: 600px;
-  background: rgba(255,255,255,0.95);
-  border: 2px solid var(--wood-brown);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  padding: 1rem;
-  box-sizing: border-box;
-}
-.playlist-column h2 {
-  margin-top: 0;
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-  border-bottom: 1px dashed var(--wood-brown);
-  padding-bottom: 0.25rem;
-  color: #333;
-  font-family: 'Patrick Hand', cursive;
-}
-
-/* Each snapshot entry */
-.snapshot {
-  border-bottom: 1px solid #DDD;
-  padding: 0.75rem 0;
-}
-.snapshot:last-child {
-  border-bottom: none;
-}
-.timestamp {
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.85rem;
-  color: #555;
-  margin-bottom: 0.25rem;
-}
-.description {
-  font-family: 'Patrick Hand', cursive;
-  font-size: 1rem;
-  color: #333;
-  line-height: 1.4;
-  margin-bottom: 0.5rem;
-  padding-left: 0.25rem;
-}
-.snapshot img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-  border: 2px solid var(--wood-brown);
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.no-snapshots {
-  font-style: italic;
-  color: #666;
-  text-align: center;
-  margin-top: 1rem;
-  font-family: 'Patrick Hand', cursive;
-}
