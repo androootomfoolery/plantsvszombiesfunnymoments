@@ -72,11 +72,13 @@
    }
    
    header h1 {
-     font-family: 'Patrick Hand', cursive;
-     font-size: 2.5rem;
-     color: var(--accent);
-     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-   }
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10rem;
+    color: var(--accent);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+  }
    
    
    /* ----------------------------------------------------
@@ -256,42 +258,34 @@
          – Flower border via border‐image
          – Semi‐opaque white behind <img> so it doesn’t “disappear”
       ---------------------------------------------------- */
-   .snapshot {
-     position: relative;
-     text-align: center;
-     margin-bottom: 1.5rem;
-   
-     /* 9a) Bark “wood‐texture” background behind each tile */
-     background: url('bark.jpg') no-repeat center center;
-     background-size: cover;
-   
-     /* 9b) Floral border around that bark box */
-     border: 16px solid transparent;          /* allocate space for border‐image */
-     border-image-source: url('flower-border.png');
-     border-image-slice: 30 fill;            /* slice out the corners/edges & fill center if needed */
-     border-image-width: 16px;               /* how thick that border‐image should be */
-     border-image-outset: 0;                 /* do not extend beyond box */
-     border-image-repeat: stretch;           /* stretch edges/corners instead of tiling */
-     border-radius: 8px;                     /* slight rounding so flowers look natural */
-     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-   
-     /* 9c) Padding so timestamp/description don’t butt right against bark */
-     padding: 1rem;
-   }
+      .snapshot {
+        position: relative;
+        width: 265px; /* scale factor applied */
+        height: 410px;
+        background: url('bark.jpg') no-repeat center center;
+        background-size: cover;
+        margin: 0 auto 1.5rem auto;
+      }
+      
+      
+      
+      
    
    /* 10) Ensure the <img> always sits on a semi‐opaque white panel */
    .snapshot img {
-    display: block;
-    width: 100%;
-    max-width: 240px;
-    height: 240px; /* 👈 force fixed height */
-    object-fit: cover; /* 👈 crop and center nicely */
-    margin: 0 auto;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 2px solid var(--wood-brown);
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 28px;
+    left: 28px;
+    width: 210px;
+    height: 210px;
+    object-fit: cover;
+    background: transparent;
+    border: none;
   }
+  
+  
+  
+  
    
    /* 11) Timestamp & Description inside each bark tile */
    .timestamp {
@@ -388,16 +382,17 @@
   .details-heading {
     font-family: 'Press Start 2P', cursive;
     font-size: 0.85rem;
-    text-align: center;
-    color: var(--chalk-white);
-    background-color: var(--chalkboard-bg);
-    padding: 0.8rem 1rem;
+    color: #111;
+    background: url('bark.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 1.5rem 2.5rem;
     margin: 1rem auto;
-    border: 2px solid var(--wood-brown);
-    border-radius: 8px;
+    border: 3px solid #5c3a1e; /* dark wood edge */
+    border-radius: 6px;
     width: fit-content;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    text-transform: none;
     letter-spacing: 0.5px;
-    text-transform: uppercase;
   }
   

@@ -165,7 +165,7 @@ function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
     detailsDiv.innerHTML = "";
   
     const heading = document.createElement("h1");
-    heading.textContent = `Changes on ${formatDateShort(date)}`;
+    heading.textContent = formatDateShort(date);
     heading.className = "details-heading";
     detailsDiv.appendChild(heading);
   
