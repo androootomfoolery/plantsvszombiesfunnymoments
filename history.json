@@ -15,7 +15,14 @@
         "date":      "2025-07-01",
         "playlistId": "7bGfzjckDQDDvAIMVe95jF",
         "description": "test 8",
-        "imageUrl":   "data/7bGfzjckDQDDvAIMVe95jF/2025-06-01T23-48-07-481Z-image.jpg"
+        "imageUrl":   "data/7bGfzjckDQDDvAIMVe95jF/2025-07-01T23-48-07-481Z-image.jpg"
+      },
+      {
+        "timestamp": "2025-07-02T12:00:00.000Z",
+        "date":      "2025-07-02",
+        "playlistId": "7bGfzjckDQDDvAIMVe95jF",
+        "description": "Dummy July snapshot #2",
+        "imageUrl":   "data/7bGfzjckDQDDvAIMVe95jF/2025-07-02T12-00-00-000Z-image.jpg"
       },
       {
         "timestamp": "2025-06-01T23:48:07.481Z",
@@ -71,6 +78,20 @@
         "playlistId": "7p9MuqPeyJmjDqU0A7yML1",
         "description": "",
         "imageUrl": "data/7p9MuqPeyJmjDqU0A7yML1/2025-06-01T21-37-08-887Z-image.jpg"
+      },
+      {
+        "timestamp": "2025-07-01T21:37:08.887Z",
+        "date": "2025-07-01",
+        "playlistId": "7p9MuqPeyJmjDqU0A7yML1",
+        "description": "",
+        "imageUrl": "data/7p9MuqPeyJmjDqU0A7yML1/2025-07-01T21-37-08-887Z-image.jpg"
+      },
+      {
+        "timestamp": "2025-07-02T13:00:00.000Z",
+        "date": "2025-07-02",
+        "playlistId": "7p9MuqPeyJmjDqU0A7yML1",
+        "description": "Dummy July snapshot #2",
+        "imageUrl": "data/7p9MuqPeyJmjDqU0A7yML1/2025-07-02T13-00-00-000Z-image.jpg"
       }
     ]
   }
