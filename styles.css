@@ -92,11 +92,11 @@
    
    .month-card {
     background: url('wood.jpg') repeat;
-    border: 8px solid #5c3a1e; /* Dark wood color */
+    border: 8px solid #24170f; /* Dark wood color */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     padding: 1rem;
-    width: 357.5px;
+    width: 500px;
     max-width: 90%;
     position: relative;
   }
@@ -115,24 +115,29 @@
      font-family: 'Press Start 2P', cursive;
      font-size: 0.9rem;
      color: var(--chalk-white);
+     text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+     padding: 0.4rem 1rem;
+     border: 2px solid #6aaa64;
+     background: rgba(0, 0, 0, 0.3);
+     border-radius: 6px;
+     margin-bottom: 0.5rem;
+
    }
    
    #prev-month,
    #next-month {
-    background-color: #5c3a1e;
-    border: none;
-    color: #f5f5f5;
-    font-size: 1.2rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
+     background-color: #6aaa64; /* Minecraft green */
+     color: #111;
+     font-weight: bold;
+     border-radius: 4px;
+     padding: 0.3rem 0.6rem;
+     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+     transition: background-color 0.2s ease;
+   }
    
    #prev-month:hover,
    #next-month:hover {
-     background-color: #704b2a;  /* slightly darker wood on hover */
+     background-color: #5e9458;
    }
    
    
@@ -143,6 +148,7 @@
      width: 100%;
      border-collapse: collapse;
      table-layout: fixed;
+     
    }
    
    .calendar-table th {
@@ -157,16 +163,19 @@
    }
    
    .calendar-table td {
+    text-align: center;
     background: url('wood.jpg') repeat;
     border: 1px solid #3e3e3e;
     height: 39px;
-    vertical-align: top;
+    vertical-align: middle;
     position: relative;
     transition: background 0.2s ease;
   }
   
   .calendar-table td:hover {
     background: url('wood.jpg') repeat;
+    background-color: rgba(106, 170, 100, 0.4);
+    outline: 2px dashed #6aaa64;
   }
    
   .calendar-table td .day-number {
@@ -180,6 +189,8 @@
    
    .calendar-table td.has-snapshot {
     border: 2px solid #81c784; /* Light green */
+    outline: 2px solid #6aaa64;
+
   }
   
   .calendar-table td.has-snapshot:hover {
@@ -444,4 +455,53 @@
   align-items: flex-start;
   text-align: left;
 }
+  
+#calendar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 🎯 horizontally centers everything */
+    justify-content: center;
+  } 
+
+  .minecraft-book {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    width: 700px;
+    height: 400px;
+    margin: 2rem auto;
+    background: #8B5E3C;
+    border: 4px solid #2a1a0f;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    font-family: 'Press Start 2P', monospace;
+    color: #111;
+    overflow: hidden;
+  }
+  
+  .book-page {
+    flex: 1;
+    padding: 1.25rem;
+    background: #f8f1d9;
+    box-shadow: inset 0 0 6px #b0906e;
+    overflow-y: auto;
+  }
+  
+  .book-page.left {
+    border-right: 2px dashed #a4753c;
+  }
+  
+  .book-page p {
+    font-size: 0.7rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  
+  .book-title {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    color: #e0d4b7;
+    text-shadow: 1px 1px 0 #000;
+    margin: 1rem auto;
+  }
   
