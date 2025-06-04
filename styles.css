@@ -260,8 +260,8 @@
       ---------------------------------------------------- */
       .snapshot {
         position: relative;
-        width: 265px; /* scale factor applied */
-        height: 410px;
+        width: 540.6px; /* scale factor applied */
+        height: 836.4px;
         background: url('bark.jpg') no-repeat center center;
         background-size: cover;
         margin: 0 auto 1.5rem auto;
@@ -276,8 +276,8 @@
     position: absolute;
     top: 28px;
     left: 28px;
-    width: 210px;
-    height: 210px;
+    width: 450px;
+    height: 450px;
     object-fit: cover;
     background: transparent;
     border: none;
@@ -394,5 +394,22 @@
     text-align: center;
     text-transform: none;
     letter-spacing: 0.5px;
+  }
+  
+  .snapshot .description {
+    position: absolute;
+    bottom: 50px; /* Adjust vertically to sit on the plank */
+    left: 0;
+    width: 100%;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.7rem; /* Larger font for better visibility */
+    color: #111; /* Solid dark color for high contrast */
+    text-align: center;
+    padding: 0 10px;
+    line-height: 1.3;
+    background: none; /* Removes background highlight */
+    box-sizing: border-box;
+    white-space: normal;
+    word-wrap: break-word;
   }
   
