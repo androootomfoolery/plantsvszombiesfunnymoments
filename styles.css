@@ -91,43 +91,44 @@
    }
    
    .month-card {
-     background: var(--chalkboard-bg);      /* chalkboard “board” */
-     border: 8px solid var(--wood-brown);   /* thick wood frame */
-     border-radius: 8px;
-     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-     padding: 1rem;
-     width: 550px;                          /* fixed width for large calendar */
-     max-width: 90%;
-     position: relative;
-   }
+    background: url('wood.jpg') repeat;
+    border: 8px solid #5c3a1e; /* Dark wood color */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    width: 357.5px;
+    max-width: 90%;
+    position: relative;
+  }
+  
+  #month-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
    
-   #month-nav {
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     gap: 1rem;
-     margin-bottom: 1rem;
-   }
-   
+   .calendar-table th,
+   .calendar-table td,
    #month-display {
-     font-family: 'Patrick Hand', cursive;
-     font-size: 1.5rem;
+     font-family: 'Press Start 2P', cursive;
+     font-size: 0.9rem;
      color: var(--chalk-white);
-     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
    }
    
    #prev-month,
    #next-month {
-     background-color: var(--wood-brown);
-     border: none;
-     color: var(--chalk-white);
-     font-size: 1.2rem;
-     padding: 0.3rem 0.8rem;
-     border-radius: 4px;
-     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-     cursor: pointer;
-     transition: background-color 0.2s ease;
-   }
+    background-color: #5c3a1e;
+    border: none;
+    color: #f5f5f5;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
    
    #prev-month:hover,
    #next-month:hover {
@@ -148,43 +149,42 @@
      padding: 0.6rem 0;
      text-transform: uppercase;
      letter-spacing: 0.05em;
-     font-family: 'Patrick Hand', cursive;
-     font-size: 1rem;
+     font-family: 'Press Start 2P', cursive;
+     font-size: .7rem;
      color: var(--chalk-white);
      background: transparent;
      border-bottom: 2px solid var(--wood-brown);
    }
    
    .calendar-table td {
-     width: calc(100% / 7);
-     height: 60px;                   /* larger clickable area */
-     vertical-align: top;
-     border: 1px solid var(--wood-brown);
-     background: var(--cell-fill);
-     position: relative;
-     transition: background 0.2s ease;
-   }
+    background: url('wood.jpg') repeat;
+    border: 1px solid #3e3e3e;
+    height: 39px;
+    vertical-align: top;
+    position: relative;
+    transition: background 0.2s ease;
+  }
+  
+  .calendar-table td:hover {
+    background: url('wood.jpg') repeat;
+  }
    
-   .calendar-table td:hover {
-     background: #333333;            /* slightly darker on hover */
-   }
-   
-   .calendar-table td .day-number {
-     position: absolute;
-     top: 6px;
-     left: 6px;
-     font-family: 'Patrick Hand', cursive;
-     font-size: 1rem;
-     color: var(--chalk-white);
-   }
+  .calendar-table td .day-number {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    color: #f5f5f5;
+  }
    
    .calendar-table td.has-snapshot {
-     border: 2px solid var(--highlight);
-   }
-   
-   .calendar-table td.has-snapshot:hover {
-     background: #2a2a2a;
-   }
+    border: 2px solid #81c784; /* Light green */
+  }
+  
+  .calendar-table td.has-snapshot:hover {
+    background: url('wood.jpg') repeat;
+  }
    
    .no-snapshots {
      font-family: 'Patrick Hand', cursive;
@@ -260,8 +260,8 @@
       ---------------------------------------------------- */
       .snapshot {
         position: relative;
-        width: 540.6px; /* scale factor applied */
-        height: 836.4px;
+        width: 351.39px; /* scale factor applied */
+        height: 543.66px;
         background: url('bark.jpg') no-repeat center center;
         background-size: cover;
         margin: 0 auto 1.5rem auto;
@@ -274,10 +274,10 @@
    /* 10) Ensure the <img> always sits on a semi‐opaque white panel */
    .snapshot img {
     position: absolute;
-    top: 45px;
-    left: 45px;
-    width: 450px;
-    height: 450px;
+    top: 30px;
+    left: 30px;
+    width: 292.5px;
+    height: 292.5px;
     object-fit: cover;
     background: transparent;
     border: none;
@@ -304,7 +304,7 @@
     border: none;
     padding: 0.5rem 0;
     text-align: center;
-    font-size: 6rem; /* 🔥 Bigger emoji */
+    font-size: 4rem; /* 🔥 Bigger emoji */
     line-height: 1;
     margin-bottom: 1rem;
     color: inherit; /* keep natural emoji rendering */
@@ -323,22 +323,23 @@
    /* ----------------------------------------------------
       12) Responsive Tweak – Smaller screens
       ---------------------------------------------------- */
-   @media (max-width: 600px) {
-     .month-card {
-       width: 100%;
-       padding: 0.5rem;
-     }
-     #month-nav {
-       flex-direction: column;
-       gap: 0.5rem;
-     }
-     #month-display {
-       font-size: 1.2rem;
-     }
-     .calendar-table td {
-       height: 45px;
-     }
-   }
+      @media (max-width: 600px) {
+        .month-card {
+          width: 100%;
+          padding: 0.5rem;
+        }
+        #month-nav {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        #month-display {
+          font-size: 1.2rem;
+        }
+        .calendar-table td {
+          height: 45px;
+        }
+      }
+      
    .snapshot-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -405,7 +406,7 @@
   
   .snapshot .description {
     position: absolute;
-    top: 580px; /* still lines up with plank start */
+    top: 375px; /* still lines up with plank start */
     left: 0;
     width: 100%;
   
@@ -432,13 +433,13 @@
 
   .snapshot .description.short {
 
-    font-size: 1.5rem;
+    font-size: .975rem;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 .snapshot .description.long {
-  font-size: 1.05rem;
+  font-size: .6825rem;
   justify-content: flex-start;
   align-items: flex-start;
   text-align: left;
