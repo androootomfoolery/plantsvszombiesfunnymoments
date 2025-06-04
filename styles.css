@@ -398,18 +398,26 @@
   
   .snapshot .description {
     position: absolute;
-    bottom: 50px; /* Adjust vertically to sit on the plank */
+    top: 570px; /* still lines up with plank start */
     left: 0;
     width: 100%;
-    font-family: 'Patrick Hand', cursive;
-    font-size: 1.7rem; /* Larger font for better visibility */
-    color: #111; /* Solid dark color for high contrast */
-    text-align: center;
-    padding: 0 10px;
-    line-height: 1.3;
-    background: none; /* Removes background highlight */
+  
+    /* ✅ Let it grow naturally with content */
+    min-height: 80px;
+  
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.05rem;
+    color: #111;
+    background: transparent;
+    padding: 0.4rem 0.6rem;
     box-sizing: border-box;
+    text-shadow: 1px 1px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff;
+
+  
     white-space: normal;
-    word-wrap: break-word;
+    word-break: break-word;
+  
+    /* 🔥 Remove overflow and flex-only settings */
+    display: block;
   }
   
