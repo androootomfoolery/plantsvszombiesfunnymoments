@@ -197,8 +197,8 @@ function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
         tile.className = "snapshot";
   
         const time = document.createElement("div");
-        time.className = "timestamp";
-        time.textContent = new Date(snap.timestamp).toLocaleTimeString();
+        // time.className = "timestamp";
+        // time.textContent = new Date(snap.timestamp).toLocaleTimeString();
   
         const desc = document.createElement("div");
         desc.className = "description";

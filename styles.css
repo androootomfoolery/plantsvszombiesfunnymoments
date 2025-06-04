@@ -298,9 +298,18 @@
   }
    
    .details-heading,
-    .playlist-column h2 {
-  font-family: 'Press Start 2P', cursive;
-}
+   
+   .playlist-column h2 {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0;
+    text-align: center;
+    font-size: 6rem; /* 🔥 Bigger emoji */
+    line-height: 1;
+    margin-bottom: 1rem;
+    color: inherit; /* keep natural emoji rendering */
+    box-shadow: none;
+  }
    .description {
      font-family: 'Patrick Hand', cursive;
      font-size: 1rem;
@@ -383,20 +392,16 @@
   
   .details-heading {
     font-family: 'Press Start 2P', cursive;
-    font-size: 0.85rem;
-    color: #111;
-    background: url('bark.jpg') no-repeat center center;
-    background-size: cover;
-    padding: 1.5rem 2.5rem;
-    margin: 1rem auto;
-    border: 3px solid #5c3a1e; /* dark wood edge */
-    border-radius: 6px;
-    width: fit-content;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    font-size: 1.5rem;
+    color: var(--accent);
     text-align: center;
-    text-transform: none;
-    letter-spacing: 0.5px;
+    background: transparent;
+    padding: 0.4rem 0.8rem;
+    margin-top: 0.5rem;
+    text-shadow: 1px 1px 2px #000; /* Optional for visibility */
+    border: none;
   }
+  
   
   .snapshot .description {
     position: absolute;
