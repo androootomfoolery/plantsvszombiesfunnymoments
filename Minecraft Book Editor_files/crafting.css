@@ -1,0 +1,131 @@
+#result {
+  margin: 0px;
+  padding: 10px;
+  background: #C5C7C4;
+  border-radius: 4px;
+  border: 2px solid #aaa;
+}
+
+#result a { text-decoration: none; }
+
+table.brewing-stand {
+  vertical-align: top;
+  float: right;
+  margin-right: 25%;
+}
+
+#result .resultat {
+  text-align: center;
+  margin: 20px;
+}
+
+#result .resultat h3 {
+	font-size: 28px;
+	color: #000;
+	padding: 0px;
+	margin: 0px;
+	margin-bottom: 20px;
+	line-height: 38px;
+	font-family: 'minecraftiaregular';
+	font-weight: normal;
+	text-align: center;
+}
+
+#result .methodes {
+  text-align: center;
+  font-family: 'minecraftiaregular';
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 26px;
+  vertical-align: top;
+  border-radius: 6px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#result .methodes.low-count {
+  line-height: 32px !important;
+}
+#result .methodes:empty {
+  display: none;
+}
+#result .methodes .link {
+	background: #444;
+  padding: 2px 10px;
+	color: #fff;
+  border: 3px solid #444;
+	border-radius: 4px 4px;
+  text-align: center;
+  min-width: 30px;
+  margin: 3px;
+  letter-spacing: 2px;
+}
+#result .methodes .link:hover {
+	color: #fff;
+	background: #000;
+  cursor: pointer;
+}
+#result .methodes .active,
+#result .methodes .active:hover {
+	background: #fff;
+  color: #000;
+	cursor: default;
+  border-color: #000;
+}
+
+#result .img,
+#result #craftable {
+  display: inline-block;
+}
+#result .resultat .crafttable {
+  display: inline-block;
+}
+#result .resultat .bloc-crafting {
+	/*margin-left: 150px;*/
+	border: 2px outset #fff;
+  display: inline-block;
+}
+
+#result .resultat .block-big, 
+#result .resultat #img-item-big,
+#result .resultat  #img-bloc-big,
+#result .resultat .img-item-big, 
+#result .resultat .img2-item-big {
+	order: 1;
+	height: 128px;
+	margin-right: 60px;
+  border-radius: 4px;
+}
+
+#result .case-crafting {
+  display: block; /* !important; */
+}
+
+.liste {
+  margin: 10px 0 0 0;
+}
+
+.liste h4 {
+  background: #42A500;
+  color: #fff;
+  padding: 2px 10px;
+}
+
+.categorie .item { 
+  padding: 2px;
+  cursor: pointer;
+
+}
+
+.categorie .block-small,
+.categorie #img-bloc-small {
+  cursor: pointer;
+  vertical-align: inherit;
+}
+
+#result .case-crafting.tag-hide,
+.tag-hide {
+  display: none;
+}

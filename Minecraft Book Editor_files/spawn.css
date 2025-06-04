@@ -1,0 +1,420 @@
+/******************
+*   G L O B A L   *
+******************/
+
+.frame
+{
+  margin-left: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.frame a {
+  color: #42A500;
+  text-decoration: underline;
+}
+
+.title,
+.subtitle,
+.unit
+{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.unit
+{
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.subtitle
+{
+  font-size: 12px;
+  color: gray;
+}
+
+.select2-chosen img, .select2-chosen div, .select2-drop .select2-result-label img, .select2-drop .select2-result-label div {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.select2-drop .select2-results {
+    max-height: 362px;
+}
+.select2-container {
+    width: 400px;
+}
+.select2-drop .select2-results .select2-result-label {
+    overflow: hidden;
+    white-space: nowrap;
+}
+.select2-container .select2-choice .select2-arrow {
+    background: #f8ffe8 linear-gradient(to bottom, #f8ffe8 0%, #e3f5ab 33%, #b7df2d 100%) repeat scroll 0 0;
+}
+.select2-container.select2-dropdown-open .select2-choice .select2-arrow {
+    background: transparent none repeat scroll 0 0;
+}
+.select2-dropdown-open .select2-choice {
+    background-image: linear-gradient(to bottom, #ddff96 0%, #f8ffe8 97%, #ffffff 100%);
+}
+
+
+.color_picker 
+{
+  height: 22px;
+  width: 56px;
+  text-align: center;
+  border: 1px solid black;
+}
+
+/* lien JS */
+.preview-skin
+{
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+/* SLIDER */
+
+.slider /* slider (user control) */
+{
+  height: 12px;
+  border: 1px solid #AAA;
+  background-color: #DADED8;
+  display: inline-block;
+}
+.slider_value /* slider simple (user control) */
+{
+  width: 320px;
+}
+.slider_range /* slider double (user control) */
+{
+  width: 270px;
+}
+.slider-input input
+{
+  width: 30px;
+  font-weight: bolder;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.ui-slider /* slider (global) */
+{
+  position: relative;
+  text-align: left;
+}
+.ui-slider:hover /* slider : hover global */
+{
+  border: solid 1px #4EC300;
+}
+
+/* color palette */
+.color
+{
+  cursor: pointer;
+}
+
+
+.ui-corner-all /* tous les angles */
+{
+  border-radius: 6px;
+}
+
+.slider .ui-slider-range /* barre de selection (en mode range) */
+{
+  position: absolute;
+  z-index: 1;
+  display: block;
+  border: 0;
+  border-radius: 4px;
+  background-position: 0 0;
+  top: 0;
+  height: 100%;
+  background-color: green !important;
+}
+
+.slider .ui-slider-handle /* curseur */
+{
+  position: absolute;
+  z-index: 2;
+  cursor: default;
+  width: 6px !important;
+  margin-left: -3px !important;
+  top: -4px;
+  height: 18px;
+  border: 1px solid green;
+  background-color: #55C300;
+}
+.slider .ui-state-hover /* curseur : mouse-over */
+{
+  border: solid 1px #3C9100;
+}
+.slider .ui-state-focus /* curseur : input selectionné */
+{
+  border: solid 2px #3C9100;
+  top: -5px;
+  margin-left: -4px !important;
+  outline: 0;
+}
+.slider .ui-state-active /* curseur : click sur l'element */
+{
+  border: solid 2px #3C9100;
+  top: -5px;
+  margin-left: -4px !important;
+}
+
+.input_from_slider
+{
+  text-align: center;
+  width: 35px;
+}
+
+/* INPUT NUMBER */
+
+.input_number
+{
+  text-align: center;
+  width: 75px;
+}
+
+
+/* INPUT RADIO / RADIO-BUTTON */
+.radiobutton
+{
+  border: 1px solid #aaa;
+  color: #444;
+  background-color: #fff;
+  background-image: linear-gradient(to top, #eee 0%, #fff 50%);
+  border-radius: 4px;
+  padding: 5px;
+  line-height: 40px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.radiobutton.selected
+{
+  background-color: #e3f5ab !important;
+  background-image: linear-gradient(to bottom, #f8ffe8 0%,#e3f5ab 66%,#b7df2d 100%) !important;
+  font-weight: bold;
+}
+
+
+
+/* ELEMENT DIVERS */
+.select_textarea
+{
+  margin: 2px;
+  height: 110px;
+  width: 300px;
+  vertical-align: top;
+  font-size: 16px;
+}
+
+
+
+/* INPUT: MOB et MOB_TYPE */
+.select_mob .select2-choice,
+.select_mob_types .select2-choice
+{
+  /* augmentation de la hauteur pour l'affichage des icons */
+  height: 53px;
+  padding-top: 5px;
+}
+.select_mob .select2-chosen,
+.select_mob_types .select2-chosen
+{
+  line-height: 48px; /* augmente la haute des lignes sans icone */
+}
+.select_mob .select2-choice .select2-arrow b,
+.select_mob_types .select2-choice .select2-arrow b
+{
+  /* positionnement de la flèche vers le bas */
+  background-position: 0 15px;  
+}
+
+
+/* INPUT: COLOR (sheep et collar_dog) */
+.select_mob_color_sheep .select2-choice,
+.select_mob_color_collar_dog .select2-choice
+{
+  /* augmentation de la hauteur pour l'affichage des icons */
+  height: 30px;
+}
+.mob_color_sheep_preview,
+.mob_color_collar_dog_preview
+{
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+
+/* INPUT: ITEMS LIST */
+.select_items .select2-choice
+{
+  /* augmentation de la hauteur pour l'affichage des icons */
+  height: 35px;
+  padding-top: 3px;
+}
+.select_items .select2-choice .select2-arrow b
+{
+  /* positionnement de la flèche vers le bas */
+  background-position: 0 8px;  
+}
+
+
+
+/* INPUT: ITEMS LIST */
+.select_skull_types .select2-choice
+{
+  /* augmentation de la hauteur pour l'affichage des icons */
+  height: 35px;
+  padding-top: 3px;
+}
+.select_skull_types .select2-choice .select2-arrow b
+{
+  /* positionnement de la flèche vers le bas */
+  background-position: 0 8px;  
+}
+
+
+/* INPUT: POTION EFFECTS + ENCHANTMENT */
+.select_mob_potion_effect .select2-search-choice,
+.mob_potion_effect_frame .select2-search-choice,
+.enchantment_frame .select2-search-choice
+{
+  line-height: 34px !important;
+}
+.select_mob_potion_effect .select2-search-choice img,
+.enchantment_frame .select2-search-choice img
+{
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.select_mob_potion_effect .select2-search-choice .select2-search-choice-close,
+.enchantment_frame .select2-search-choice .select2-search-choice-close
+{
+  margin-top: 10px;
+}
+
+/* CHECKBOX */
+.checkbox img#img-item-small
+{
+  margin-top: -11px;
+  vertical-align: middle;
+}
+
+
+/* */
+
+.frame {
+  border-bottom: 1px dotted #ddd;
+}
+
+#mob_frame,
+#command_type_frame {
+  text-align: center;
+  border-bottom: 0 none;
+}
+
+#mob_frame {
+  margin-bottom: 20px;
+}
+
+#command_type_frame {
+  padding: 20px;
+}
+
+
+.sub-cat-item,
+.mob_potion_effect_suboptions {
+  background: #eee;
+  margin: 10px 0 5px 0;
+  border-left: 4px solid #B1DC58;
+  font-size: 12px;
+  border-radius: 2px;
+}
+.sub-cat-item .sub-cat-item,
+#mob_armor_head_type_skull_name_frame,
+.enchantment_options {
+  background: #ccc;
+  border-left: 4px solid #4EC300;
+}
+
+.enchantment_options
+{
+  padding: 5px 10px;
+  margin: 10px 0px;
+}
+
+
+#mob_armor_head_type_skull_name_frame .preview-skin  {
+  background: #009900;
+  padding: 2px 10px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+
+
+.mob_potion_effect_suboptions {
+  padding: 10px;
+  margin: 10px 5px 5px 5px;
+  line-height: 28px;
+}
+
+#mob_name_frame input,
+.sub-cat-item input,
+#mob_team_frame input,
+#mob_lootstable_frame input {
+  padding: 4px;
+  font-size: 16px;
+  border-radius: 3px;
+  border: 1px solid #aaa;
+}
+#mob_name_frame input,
+#mob_team_frame input,
+#mob_lootstable_frame input {
+  width: 250px;
+}
+
+#mob_ridding_frame {
+  border-bottom: 0 none;
+}
+
+
+.input_from_slider {
+  margin-left: 10px;
+  width: inherit;
+}
+
+/*#result {
+  background: #444;
+  border: 2px dotted #111;
+  font-family: monospace, sans-serif;
+  display: inline-block;
+  color: #fff;
+  padding: 10px;
+  margin: 20px 0 0 0;
+  overflow: auto;
+  width: 96%;
+}*/
+
+.give.old_version
+{
+  display: none;
+}
+
+.last_version {
+  text-align: center;
+}
