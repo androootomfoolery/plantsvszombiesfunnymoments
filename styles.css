@@ -274,8 +274,8 @@
    /* 10) Ensure the <img> always sits on a semi‐opaque white panel */
    .snapshot img {
     position: absolute;
-    top: 28px;
-    left: 28px;
+    top: 45px;
+    left: 45px;
     width: 450px;
     height: 450px;
     object-fit: cover;
@@ -289,11 +289,13 @@
    
    /* 11) Timestamp & Description inside each bark tile */
    .timestamp {
-     font-family: 'Press Start 2P', monospace;
-     font-size: 0.75rem;
-     color: #555;
-     margin-bottom: 0.4rem;
-   }
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85rem;
+    color: #111;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
    
    .details-heading,
     .playlist-column h2 {
@@ -398,7 +400,7 @@
   
   .snapshot .description {
     position: absolute;
-    top: 570px; /* still lines up with plank start */
+    top: 580px; /* still lines up with plank start */
     left: 0;
     width: 100%;
   
@@ -411,7 +413,9 @@
     background: transparent;
     padding: 0.4rem 0.6rem;
     box-sizing: border-box;
-    text-shadow: 1px 1px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff;
+    text-align: center;
+
+
 
   
     white-space: normal;
@@ -420,4 +424,18 @@
     /* 🔥 Remove overflow and flex-only settings */
     display: block;
   }
+
+  .snapshot .description.short {
+
+    font-size: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.snapshot .description.long {
+  font-size: 1.05rem;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
   

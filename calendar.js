@@ -202,7 +202,16 @@ function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
   
         const desc = document.createElement("div");
         desc.className = "description";
-        desc.textContent = snap.description || "(no description)";
+
+        // Determine length and apply the right class
+        const text = snap.description || "(no description)";
+        desc.textContent = text;
+
+        if (text.length < 50) {
+        desc.classList.add("short");
+        } else {
+        desc.classList.add("long");
+}
   
         const img = document.createElement("img");
         img.src = snap.imageUrl;
@@ -211,6 +220,8 @@ function showSnapshotsForDate(date, snapsOnDate, allPlaylistsData) {
         tile.appendChild(time);
         tile.appendChild(desc);
         tile.appendChild(img);
+        column.appendChild(time); // ✅ move timestamp outside snapshot
+
   
         column.appendChild(tile);
       }
