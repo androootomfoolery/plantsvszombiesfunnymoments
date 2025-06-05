@@ -541,14 +541,80 @@
     align-items: flex-end;
   }
   
-  /* 🎯 Individual gif sizes */
-  .crazy-dave { width: 300px; }
-  .peashooter { width: 200px; }
-  .sunflower { width: 200px; }
+/* 🌻 LEFT SIDE CHARACTERS */
+/* 🌻 LEFT SIDE CHARACTERS */
+.crazy-dave {
+    width: 250px;
+    position: fixed;
+    top: 60px; /* originally 160px */
+    left: 20px;
+  }
   
-  .zomboss { width: 400px; }
-  .zombie { width: 300px; }
-  .dead-zombie { width: 200px; }
+  .peashooter:nth-of-type(2) {
+    width: 180px;
+    position: fixed;
+    top: 350px; /* originally 450px */
+    left: 50px;
+  }
+  
+  .peashooter:nth-of-type(3) {
+    width: 180px;
+    position: fixed;
+    top: 700px; /* originally 800px */
+    left: 50px;
+  }
+  
+  .sunflower:nth-of-type(4) {
+    width: 180px;
+    position: fixed;
+    top: 500px; /* originally 600px */
+    left: 40px;
+  }
+  
+  .sunflower:nth-of-type(5) {
+    width: 180px;
+    position: fixed;
+    top: 850px; /* originally 950px */
+    left: 40px;
+  }
+  
+  /* 🧟 RIGHT SIDE CHARACTERS */
+  .zomboss {
+    position: fixed;
+    right: -60px;
+    top: -10px; /* originally 90px */
+    width: 350px;
+  }
+  
+  .zombie1 {
+    position: fixed;
+    right: 65px;
+    top: 300px; /* originally 400px */
+    width: 200px;
+  }
+  
+  .zombie2 {
+    position: fixed;
+    right: 65px;
+    top: 450px; /* originally 550px */
+    width: 200px;
+  }
+  
+  .zombie3 {
+    position: fixed;
+    right: 65px;
+    top: 620px; /* originally 760px */
+    width: 200px;
+  }
+  
+  .deadzombie {
+    position: fixed;
+    right: 110px;
+    top: 660px; /* originally 760px */
+    width: 160px;
+  }
+  
+  
   
   
   
