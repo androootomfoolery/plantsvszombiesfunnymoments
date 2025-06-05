@@ -27,7 +27,7 @@
      /* A semi‐opaque overlay to darken the page background */
      --overlay: rgba(0, 0, 0, 0.45);
      /* Accent text color (off‐white faintly yellow) */
-     --accent: #f5eeda;
+     --accent: #f0f0f0;
    }
    
    
@@ -78,6 +78,7 @@
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     letter-spacing: 2px;
     margin-top: 0.5rem;
+    
   }
    
    
@@ -121,23 +122,27 @@
      background: rgba(0, 0, 0, 0.3);
      border-radius: 6px;
      margin-bottom: 0.5rem;
+     
 
    }
    
    #prev-month,
    #next-month {
-     background-color: #6aaa64; /* Minecraft green */
-     color: #111;
-     font-weight: bold;
-     border-radius: 4px;
-     padding: 0.3rem 0.6rem;
-     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-     transition: background-color 0.2s ease;
-   }
+    background-color: #6aaa64;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    
+    
+  }
    
    #prev-month:hover,
    #next-month:hover {
-     background-color: #5e9458;
+    background-color: #5e9458;
+    transform: scale(1.05);
    }
    
    
@@ -184,7 +189,9 @@
     left: 6px;
     font-family: 'Press Start 2P', cursive;
     font-size: 1rem;
-    color: #f5f5f5;
+    color: #f0f0f0;
+    text-shadow: 2px 2px #000; /* 🌟 This adds the bold shadow like Æ */
+
   }
    
    .calendar-table td.has-snapshot {
@@ -260,6 +267,7 @@
      font-size: 1.4rem;
      color: #333;
      border-bottom: 1px dashed var(--wood-brown);
+     
    }
    
    
@@ -306,6 +314,8 @@
     text-align: center;
     margin-top: 1rem;
     margin-bottom: 1rem;
+
+    
   }
    
    .details-heading,
@@ -409,9 +419,13 @@
     text-align: center;
     background: transparent;
     padding: 0.4rem 0.8rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     text-shadow: 1px 1px 2px #000; /* Optional for visibility */
-    border: none;
+    text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.8),
+    0 0 10px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.5),
+    2px 2px 3px rgba(0, 0, 0, 0.7);
   }
   
   
@@ -475,12 +489,19 @@
   .header-with-emoji h1 {
     font-family: 'Press Start 2P', cursive;
     font-size: 10rem;
-    color: #fdf6e3;
-    text-shadow: 2px 2px #000;
+    color: #f0f0f0;
     position: relative;
-    left: 11px; /* 🔥 tweak this to move AE to the right */
-
+    left: 11px;
+    z-index: 2;
+  
+    /* 🌑 Layered glow/shadow effect */
+    text-shadow:
+      0 0 4px rgba(0, 0, 0, 0.8),
+      0 0 10px rgba(0, 0, 0, 0.6),
+      0 0 20px rgba(0, 0, 0, 0.5),
+      3px 3px 5px rgba(0, 0, 0, 0.7); /* subtle 3D tilt */
   }
+  
   
   .header-with-emoji .emoji {
     width: 150px;
@@ -547,74 +568,78 @@
     width: 250px;
     position: fixed;
     top: 60px; /* originally 160px */
-    left: 20px;
+    left: -20px;
   }
   
   .peashooter:nth-of-type(2) {
     width: 180px;
     position: fixed;
     top: 350px; /* originally 450px */
-    left: 50px;
+    left: 0px;
   }
   
   .peashooter:nth-of-type(3) {
     width: 180px;
     position: fixed;
     top: 700px; /* originally 800px */
-    left: 50px;
+    left: 0px;
   }
   
   .sunflower:nth-of-type(4) {
     width: 180px;
     position: fixed;
     top: 500px; /* originally 600px */
-    left: 40px;
+    left: 0px;
   }
   
-  .sunflower:nth-of-type(5) {
-    width: 180px;
-    position: fixed;
-    top: 850px; /* originally 950px */
-    left: 40px;
-  }
   
   /* 🧟 RIGHT SIDE CHARACTERS */
   .zomboss {
     position: fixed;
-    right: -60px;
+    right: -105px;
     top: -10px; /* originally 90px */
     width: 350px;
   }
   
   .zombie1 {
     position: fixed;
-    right: 65px;
+    right: 30px;
     top: 300px; /* originally 400px */
     width: 200px;
   }
   
   .zombie2 {
     position: fixed;
-    right: 65px;
+    right: 30px;
     top: 450px; /* originally 550px */
     width: 200px;
   }
   
   .zombie3 {
     position: fixed;
-    right: 65px;
+    right: 30px;
     top: 620px; /* originally 760px */
     width: 200px;
   }
   
-  .deadzombie {
-    position: fixed;
-    right: 110px;
-    top: 660px; /* originally 760px */
-    width: 160px;
+  @media (max-width: 768px) {
+    .crazy-dave,
+    .peashooter,
+    .sunflower,
+    .zomboss,
+    .zombie1,
+    .zombie2,
+    .zombie3,
+    .deadzombie {
+      width: 150px;
+    }
+  
+    header h1 {
+      font-size: 5rem;
+    }
   }
   
-  
+
   
   
   
