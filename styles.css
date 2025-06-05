@@ -477,6 +477,9 @@
     font-size: 10rem;
     color: #fdf6e3;
     text-shadow: 2px 2px #000;
+    position: relative;
+    left: 11px; /* 🔥 tweak this to move AE to the right */
+
   }
   
   .header-with-emoji .emoji {
@@ -484,5 +487,68 @@
     height: 150px;
     object-fit: contain;
   }
+
+/* Side decorations (PvZ characters) */
+.side-decor {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 2rem; /* 💡 add spacing between gifs */
+    z-index: 5;
+    pointer-events: none;
+  }
+  
+  .left-decor {
+    left: 0;
+    align-items: flex-start;
+    padding-left: 0.5rem;
+  }
+  
+  .right-decor {
+    right: 0;
+    align-items: flex-end;
+    padding-right: 0.5rem;
+  }
+  
+  .side-gif {
+    width: 250px;    /* 👈 Adjust size to taste */
+    height: auto;
+  }
+
+  /* Common gif wrapper styles */
+.decor-left, .decor-right {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    z-index: 4;
+    pointer-events: none;
+    gap: 1rem;
+  }
+  
+  .decor-left {
+    left: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .decor-right {
+    right: 0.5rem;
+    align-items: flex-end;
+  }
+  
+  /* 🎯 Individual gif sizes */
+  .crazy-dave { width: 300px; }
+  .peashooter { width: 200px; }
+  .sunflower { width: 200px; }
+  
+  .zomboss { width: 400px; }
+  .zombie { width: 300px; }
+  .dead-zombie { width: 200px; }
+  
   
   
