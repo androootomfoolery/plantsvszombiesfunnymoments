@@ -12,27 +12,27 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<!-- 🌻 Left Side Characters -->
-<img src="crazydave.gif" class="floating-gif crazy-dave" alt="Crazy Dave" />
-<img src="peashooter.gif" class="floating-gif peashooter" alt="Peashooter" />
-<img src="peashooter.gif" class="floating-gif peashooter" alt="Peashooter2" />
-<img src="sunflower.gif" class="floating-gif sunflower" alt="Sunflower" />
 
+  <!-- 🌻 Left Side Characters -->
+  <img src="crazydave.gif" class="floating-gif crazy-dave" alt="Crazy Dave" />
+  <img src="peashooter.gif" class="floating-gif peashooter" alt="Peashooter" />
+  <img src="peashooter.gif" class="floating-gif peashooter" alt="Peashooter2" />
+  <img src="sunflower.gif" class="floating-gif sunflower" alt="Sunflower" />
 
-<!-- 🧟 Right Side Characters -->
-<img src="zomboss.gif" class="zomboss" alt="Zomboss" />
-<img src="zombie.gif" class="zombie1" alt="Zombie 1" />
-<img src="zombie.gif" class="zombie2" alt="Zombie 2" />
-<img src="zombie.gif" class="zombie3" alt="Zombie 3" />
+  <!-- 🧟 Right Side Characters -->
+  <img src="zomboss.gif" class="zomboss" alt="Zomboss" />
+  <img src="zombie.gif" class="zombie1" alt="Zombie 1" />
+  <img src="zombie.gif" class="zombie2" alt="Zombie 2" />
+  <img src="zombie.gif" class="zombie3" alt="Zombie 3" />
 
-  <!-- Header with Emojis -->
+  <!-- 🎯 Header with Emojis -->
   <header class="header-with-emoji">
     <img src="holy-moly.gif" alt="Left Emoji" class="emoji left-emoji" />
     <h1 class="ae-logo">Æ</h1>
     <img src="crying-emoji.gif" alt="Right Emoji" class="emoji right-emoji" />
   </header>
 
-  <!-- Calendar -->
+  <!-- 📅 Calendar -->
   <section id="calendar-section">
     <div id="calendar-wrapper">
       <div id="calendar-container" class="month-card">
@@ -46,12 +46,36 @@
     </div>
   </section>
 
-  <!-- Playlist Snapshots -->
+  <!-- 📷 Playlist Snapshots -->
   <section id="details-section">
     <div id="details"></div>
   </section>
 
-  <!-- Scripts -->
+  <!-- 📖 Book Section (now after playlist) -->
+  <section class="book-section">
+    <div class="book-container">
+      <button class="book-btn prev-btn" onclick="changePage(-1)">←</button>
+      <img id="book-page" src="book1.png" alt="Book Page" />
+      <button class="book-btn next-btn" onclick="changePage(1)">→</button>
+    </div>
+  </section>
+
+  <!-- 📜 Scripts -->
   <script src="calendar.js"></script>
+  <script>
+    const pages = [
+      'book1.png', 'book2.png', 'book3.png', 'book4.png', 'book5.png',
+      'book6.png', 'book7.png', 'book8.png', 'book9.png', 'book10.png',
+      'book11.png', 'book12.png', 'book13.png', 'book14.png', 'book15.png'
+    ];
+    let currentPage = 0;
+
+    function changePage(direction) {
+      currentPage += direction;
+      if (currentPage < 0) currentPage = 0;
+      if (currentPage >= pages.length) currentPage = pages.length - 1;
+      document.getElementById('book-page').src = pages[currentPage];
+    }
+  </script>
 </body>
 </html>

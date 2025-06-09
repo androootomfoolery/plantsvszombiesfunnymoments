@@ -642,4 +642,55 @@
 
   
   
+  .book-section {
+    display: flex;
+    justify-content: center;
+    margin-top: -2rem; /* 🔽 Reduce this if needed */
+    margin-bottom: 10rem;
+  }
+  
+  .book-container {
+    position: relative;
+    width: 300px;
+    height: auto;
+  }
+  
+  #book-page {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+  }
+  
+  /* Absolute-positioned buttons on top of page image */
+  .book-btn {
+    position: absolute;
+    bottom: 25px; /* Adjust to align with in-image arrows */
+    background-color: #6aaa64;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    border: none;
+    padding: 0.6rem 0.9rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  .book-btn:hover {
+    background-color: #5e9458;
+    transform: scale(1.1);
+  }
+  
+  .prev-btn {
+    left: 45px;
+  }
+  
+  .next-btn {
+    right: 48px;
+  }
+  
   
